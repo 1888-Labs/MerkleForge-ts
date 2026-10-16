@@ -164,6 +164,21 @@ export function rlpEncode(node: MptNode): Bytes {
 
 type RlpItem = { kind: 'bytes'; bytes: Bytes } | { kind: 'list'; items: Bytes[] }
 
+/** A decoded RLP value: a byte string or a list of values. */
+export type RlpValue = Bytes | RlpValue[]
+
+/** RLP-encodes a byte string or a nested list. */
+export function encodeRlp(value: RlpValue): Bytes {
+  return value instanceof Uint8Array ? rlpEncodeBytes(value) : rlpEncodeList(value.map(encodeRlp))
+}
+
+/** Decodes one RLP value. Throws `RlpError` for malformed input or trailing bytes. */
+export function decodeRlp(bytes: Bytes): RlpValue {
+  const [item, consumed] = parseRlpItem(bytes)
+  if (consumed !== bytes.length) throw rlpError('trailing bytes after RLP item')
+  return item.kind === 'bytes' ? item.bytes : item.items.map(decodeRlp)
+}
+
 function readPayload(bytes: Bytes, offset: number, len: number): Bytes {
   if (offset + len > bytes.length) throw rlpError('RLP payload length exceeds input')
   return bytes.subarray(offset, offset + len)
@@ -441,6 +456,66 @@ export class MerklePatriciaTrie {
       return verifyProofAt(hasher, bytesToNibbles(proof.key), proof.value, proof.proofNodes, 0)
     } catch {
       return false
+    }
+  }
+
+  /**
+   * Walks a witness for `key` and returns the value it proves: the stored
+   * bytes, or `null` when the witness proves the key is absent. Accepts
+   * witnesses in the `eth_getProof` style, where inline child nodes (RLP
+   * under 32 bytes) are embedded in their parent rather than listed.
+   * Throws `InvalidProof` when the witness does not connect to `expectedRoot`.
+   */
+  static proveValue(
+    hasher: HashFunction,
+    expectedRoot: Bytes,
+    key: Bytes,
+    proofNodes: readonly Bytes[],
+  ): Bytes | null {
+    const invalid = () => new MerkleError({ code: 'InvalidProof' })
+    const [rootNode] = proofNodes
+    if (rootNode === undefined || !bytesEqual(hasher.hashEncodedNode(rootNode), expectedRoot))
+      throw invalid()
+
+    let index = 0
+    const resolve = (ref: NodeRef): Bytes => {
+      if (ref.kind === 'inline') {
+        const listed = proofNodes[index + 1]
+        if (listed !== undefined && bytesEqual(listed, ref.rlp)) index++
+        return ref.rlp
+      }
+      const next = proofNodes[++index]
+      if (next === undefined || !bytesEqual(hasher.hashEncodedNode(next), ref.hash)) throw invalid()
+      return next
+    }
+    const done = (value: Bytes | null): Bytes | null => {
+      if (index !== proofNodes.length - 1) throw invalid()
+      return value
+    }
+
+    let path = bytesToNibbles(key)
+    let encoded = rootNode
+    for (;;) {
+      let node: MptNode
+      try {
+        node = rlpDecode(encoded)
+      } catch {
+        throw invalid()
+      }
+      if (node.kind === 'empty') return done(null)
+      if (node.kind === 'leaf') return done(nibblesEqual(node.keySuffix, path) ? node.value : null)
+      if (node.kind === 'extension') {
+        if (commonPrefixLen(path, node.sharedPrefix) !== node.sharedPrefix.length) return done(null)
+        path = path.slice(node.sharedPrefix.length)
+        encoded = resolve(node.child)
+        continue
+      }
+      const [nibble, ...rest] = path
+      if (nibble === undefined) return done(node.value)
+      const child = node.children[nibble] as NodeRef
+      if (child.kind === 'inline' && isRlpEmpty(child.rlp)) return done(null)
+      path = rest
+      encoded = resolve(child)
     }
   }
 

@@ -1,7 +1,27 @@
 export { BinaryMerkleTree, type BinaryMerkleTreeJSON } from './binary.js'
 export {
+  decodeMptProof,
+  decodeSparseProof,
+  encodeMptProof,
+  encodeSparseProof,
+  type MptProofSerdeJSON,
+  mptProofFromSerdeJSON,
+  mptProofToSerdeJSON,
+  type SparseMerkleProofSerdeJSON,
+  sparseProofFromSerdeJSON,
+  sparseProofToSerdeJSON,
+} from './codecs.js'
+export {
+  type BinaryMultiProof,
+  decodeBinaryMultiProof,
+  encodeBinaryMultiProof,
+  verifyBinaryMultiProof,
+} from './multiproof.js'
+export {
   bytesToNibbles,
   computeRootHash,
+  decodeRlp,
+  encodeRlp,
   hashNode,
   hpDecode,
   hpEncode,
@@ -11,9 +31,19 @@ export {
   type MptProof,
   type Nibbles,
   type NodeRef,
+  type RlpValue,
   rlpDecode,
   rlpEncode,
 } from './patricia.js'
+export {
+  type Hex,
+  type SolidityBinaryMultiProof,
+  type SolidityBinaryProof,
+  type SoliditySparseProof,
+  toSolidityBinaryMultiProof,
+  toSolidityBinaryProof,
+  toSoliditySparseProof,
+} from './solidity.js'
 export {
   BATCH_DEPTH,
   bitAt,

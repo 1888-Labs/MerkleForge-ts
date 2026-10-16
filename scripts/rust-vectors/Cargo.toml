@@ -10,5 +10,7 @@ publish = false
 merkle-core = { path = "../../../MerkleForge/merkle-core" }
 merkleforge-hash = { path = "../../../MerkleForge/merkle-hash" }
 merkle-variants = { path = "../../../MerkleForge/merkle-variants" }
+serde = "1"
+serde_json = "1"
 
 [workspace]
