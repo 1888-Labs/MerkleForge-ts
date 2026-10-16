@@ -12,9 +12,13 @@ A project by [1888 Labs](https://github.com/1888-Labs). Docs: <https://1888-labs
 |---------|------|-----------------|
 | [`@1888-labs/merkle-core`](packages/merkle-core) | `HashFunction` and `MerkleTree` interfaces, proofs, `MerkleError`, byte helpers | `merkle-core` |
 | [`@1888-labs/merkle-hash`](packages/merkle-hash) | `Sha256`, `Keccak256`, `Blake3` adapters | `merkleforge-hash` |
-| [`@1888-labs/merkle-variants`](packages/merkle-variants) | `BinaryMerkleTree` | `merkle-variants` |
+| [`@1888-labs/merkle-variants`](packages/merkle-variants) | `BinaryMerkleTree`, `SparseMerkleTree`, `MerklePatriciaTrie` | `merkle-variants` |
 
-`SparseMerkleTree` and `MerklePatriciaTrie` are next.
+| Variant | Use it for | Proofs |
+|---------|------------|--------|
+| `BinaryMerkleTree` | A known, ordered list of leaves (airdrops, batches, receipts) | Inclusion, `O(log n)` |
+| `SparseMerkleTree` | Key-value state over 256-bit keys (rollups, registries) | Membership and non-membership |
+| `MerklePatriciaTrie` | Ethereum-compatible tries; with `Keccak256` roots match Ethereum | RLP witnesses, membership and non-membership |
 
 ## Install
 
@@ -42,6 +46,30 @@ BinaryMerkleTree.verify(Keccak256, root, utf8('bob:250'), proof) // true
 console.log(toHex(root))
 ```
 
+Sparse Merkle tree with non-membership proofs:
+
+```ts
+import { SparseMerkleTree } from '@1888-labs/merkle-variants'
+
+const smt = new SparseMerkleTree(Keccak256)
+const alice = Keccak256.hash(utf8('alice')) // any 32-byte key
+smt.insert(alice, utf8('balance:100'))
+
+const proof = smt.generateMembershipProof(alice)
+SparseMerkleTree.verifyMembership(Keccak256, smt.root()!, alice, utf8('balance:100'), proof) // true
+```
+
+Ethereum-compatible Patricia trie:
+
+```ts
+import { MerklePatriciaTrie } from '@1888-labs/merkle-variants'
+
+const trie = new MerklePatriciaTrie(Keccak256)
+trie.insert(utf8('dog'), utf8('puppy'))
+const witness = trie.generateProof(utf8('dog'))
+MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
+```
+
 ## How it maps to Rust
 
 | Rust | TypeScript |
@@ -53,6 +81,8 @@ console.log(toHex(root))
 | `LeafIndex(usize)` | `number` |
 | `ProofSide::Left` / `Right` | `'left'` / `'right'` |
 | `serde` | `tree.toJSON()` / `BinaryMerkleTree.fromJSON(hasher, json)` |
+| `impl MerkleTree for SparseMerkleTree` (index-addressed) | `smt.indexed()` returns a `MerkleTree` view |
+| `smt.insert(key, data)` / `trie.insert(key, value)` | same names, keys are `Uint8Array` |
 
 Leaves are hashed as `H(0x00 || data)` and internal nodes as
 `H(0x01 || left || right)`; BLAKE3 uses `derive_key` contexts instead. See the
@@ -65,11 +95,23 @@ pnpm install
 pnpm build   # tsc -b
 pnpm test    # vitest, including cross-checks against vectors from the Rust crates
 pnpm lint    # biome
+pnpm check   # everything CI runs
 ```
+
+The expected values in `packages/*/test/rust-*.json` come from the Rust
+crates. With the Rust repo cloned next to this one, regenerate them with
+`scripts/rust-vectors/generate.sh`. The Patricia trie is also tested against
+the official Ethereum trie fixtures.
 
 Releases use [Changesets](https://github.com/changesets/changesets): add one
 with `pnpm changeset`, and merging the generated "Version packages" PR on
 `main` publishes to npm.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
+Report vulnerabilities privately via [SECURITY.md](.github/SECURITY.md).
+MerkleForge has not been independently audited.
 
 ## License
 

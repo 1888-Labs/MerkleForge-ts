@@ -1,0 +1,14 @@
+# Generates the expected values in packages/*/test/rust-*.json from the Rust
+# crates. Expects the Rust repo cloned next to this one (../MerkleForge).
+[package]
+name = "rust-vectors"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+merkle-core = { path = "../../../MerkleForge/merkle-core" }
+merkleforge-hash = { path = "../../../MerkleForge/merkle-hash" }
+merkle-variants = { path = "../../../MerkleForge/merkle-variants" }
+
+[workspace]

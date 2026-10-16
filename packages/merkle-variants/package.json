@@ -1,7 +1,7 @@
 {
   "name": "@1888-labs/merkle-variants",
   "version": "0.0.0",
-  "description": "Binary Merkle tree (sparse Merkle tree and Merkle Patricia trie coming) for MerkleForge.",
+  "description": "Binary Merkle tree, sparse Merkle tree, and Ethereum-compatible Merkle Patricia trie for MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
   "homepage": "https://1888-labs.github.io/MerkleForge/",
@@ -21,7 +21,10 @@
     "authenticated data structures",
     "data structures",
     "data verification",
-    "distributed systems"
+    "distributed systems",
+    "sparse-merkle-tree",
+    "merkle-patricia-trie",
+    "ethereum"
   ],
   "type": "module",
   "sideEffects": false,
