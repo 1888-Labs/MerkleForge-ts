@@ -37,24 +37,44 @@ library MerkleForgeSparse {
     }
 
     /// @notice Recomputes the root from a leaf hash. Missing siblings count as empty.
+    /// @dev One assembly loop over the 256 levels, reusing a single 65-byte buffer for both the
+    ///      path hash and the next empty-subtree hash.
     function computeRoot(bytes32 key, bytes32 leafHash, bytes32[] memory siblings, uint256 bitmap)
         internal
         pure
         returns (bytes32 current)
     {
-        current = leafHash;
         bytes32 empty = EMPTY_LEAF;
-        uint256 used;
-        for (uint256 level; level < 256; ++level) {
-            bytes32 sibling = empty;
-            if ((bitmap >> level) & 1 == 1) {
-                sibling = used < siblings.length ? siblings[used] : bytes32(0);
-                ++used;
+        assembly ("memory-safe") {
+            let buf := mload(0x40)
+            mstore8(buf, 0x01)
+            let lo := add(buf, 1)
+            let hi := add(buf, 33)
+            let count := mload(siblings)
+            let data := add(siblings, 0x20)
+            let used := 0
+            current := leafHash
+            for { let level := 0 } lt(level, 256) { level := add(level, 1) } {
+                let sibling := empty
+                if and(shr(level, bitmap), 1) {
+                    // A bitmap naming more levels than there are siblings is rejected by `_uses`.
+                    if lt(used, count) { sibling := mload(add(data, shl(5, used))) }
+                    used := add(used, 1)
+                }
+                switch and(shr(level, key), 1)
+                case 1 {
+                    mstore(lo, sibling)
+                    mstore(hi, current)
+                }
+                default {
+                    mstore(lo, current)
+                    mstore(hi, sibling)
+                }
+                current := keccak256(buf, 65)
+                mstore(lo, empty)
+                mstore(hi, empty)
+                empty := keccak256(buf, 65)
             }
-            current = (uint256(key) >> level) & 1 == 1
-                ? MerkleForgeBinary.hashNodes(sibling, current)
-                : MerkleForgeBinary.hashNodes(current, sibling);
-            empty = MerkleForgeBinary.hashNodes(empty, empty);
         }
     }
 
