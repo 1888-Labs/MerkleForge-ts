@@ -68,7 +68,8 @@ function commitment(entry: NodeEntry): Bytes {
 
 interface Leaf {
   readonly key: Bytes
-  readonly hex: string
+  /** `keyId(key)`: the map key and sort key for this leaf. */
+  readonly id: string
   readonly hash: Bytes
   /**
    * Cached roots of the single-leaf subtree above this leaf: `chain[i]` is
@@ -78,8 +79,8 @@ interface Leaf {
   readonly chain: Bytes[]
 }
 
-function makeLeaf(key: Bytes, hex: string, hash: Bytes): Leaf {
-  return { key, hex, hash, chain: [hash] }
+function makeLeaf(key: Bytes, id: string, hash: Bytes): Leaf {
+  return { key, id, hash, chain: [hash] }
 }
 
 /** A node position: its depth plus the key prefix of that length, zero-padded. */
@@ -94,7 +95,8 @@ class NodeKey {
   }
 
   get id(): string {
-    this.#id ??= `${this.depth}:${toHex(this.path)}`
+    this.#id ??=
+      String.fromCharCode(this.depth) + keyId(this.path.subarray(0, (this.depth + 7) >> 3))
     return this.#id
   }
 
@@ -134,6 +136,23 @@ class NodeKey {
     last.fill(0xff, firstFree)
     return last
   }
+}
+
+/**
+ * A compact string for `bytes`: one char per byte (Latin-1). Comparing two
+ * ids compares the bytes lexicographically, so sorted ids are in key order.
+ */
+function keyId(bytes: Bytes): string {
+  return String.fromCharCode.apply(null, bytes as unknown as number[])
+}
+
+/** Number of leading bits two distinct 32-byte keys share (0..255). */
+function commonPrefixBits(a: Bytes, b: Bytes): number {
+  for (let i = 0; i < SPARSE_KEY_BYTES; i++) {
+    const diff = (a[i] as number) ^ (b[i] as number)
+    if (diff !== 0) return i * 8 + Math.clz32(diff) - 24
+  }
+  return SPARSE_TREE_DEPTH
 }
 
 function checkKey(key: Bytes): void {
@@ -228,7 +247,7 @@ export class SparseMerkleTree {
           reason: 'leaf hash equals the empty leaf',
         })
       }
-      const hex = toHex(key)
+      const hex = keyId(key)
       if (tree.#leaves.has(hex)) {
         throw new MerkleError({ code: 'DeserializationError', reason: 'duplicate sparse key' })
       }
@@ -265,8 +284,8 @@ export class SparseMerkleTree {
     const changed = new Map<string, Bytes>()
     for (const [key, data] of list) {
       const added = this.#setLeaf(key, this.hasher.hash(data), false)
-      if (added) this.#sorted.push(toHex(key))
-      changed.set(toHex(key), key)
+      if (added) this.#sorted.push(keyId(key))
+      changed.set(keyId(key), key)
     }
     this.#sorted.sort()
     this.#applyChanges(
@@ -277,7 +296,7 @@ export class SparseMerkleTree {
   /** Removes the leaf at `key`. Throws `UnsupportedOperation` when the key is absent. */
   remove(key: Bytes): void {
     checkKey(key)
-    if (!this.#deleteLeaf(toHex(key))) {
+    if (!this.#deleteLeaf(keyId(key))) {
       throw new MerkleError({
         code: 'UnsupportedOperation',
         operation: 'remove missing sparse key',
@@ -291,7 +310,7 @@ export class SparseMerkleTree {
     const unique = new Map<string, Bytes>()
     for (const key of keys) {
       checkKey(key)
-      unique.set(toHex(key), key)
+      unique.set(keyId(key), key)
     }
     if (unique.size === 0) {
       this.#lastNodeAccesses = 0
@@ -312,7 +331,7 @@ export class SparseMerkleTree {
   /** The hashed leaf stored at `key`, if any. */
   get(key: Bytes): Bytes | undefined {
     checkKey(key)
-    return this.#leaves.get(toHex(key))?.hash.slice()
+    return this.#leaves.get(keyId(key))?.hash.slice()
   }
 
   /**
@@ -321,9 +340,24 @@ export class SparseMerkleTree {
    */
   generateMembershipProof(key: Bytes): SparseMerkleProof {
     checkKey(key)
+    // The sibling at depth d holds a leaf only if some other key shares exactly
+    // d - 1 leading bits with `key`. The longest shared prefix with any key is
+    // found at the key's sorted neighbours, so deeper siblings are all empty.
+    const id = keyId(key)
+    const at = lowerBound(this.#sorted, id)
+    const after = this.#sorted[at] === id ? at + 1 : at
+    let shared = -1
+    for (const neighbour of [this.#sorted[at - 1], this.#sorted[after]]) {
+      if (neighbour !== undefined)
+        shared = Math.max(shared, commonPrefixBits(key, this.#leafById(neighbour).key))
+    }
     const siblings: (Bytes | null)[] = []
     for (let depth = SPARSE_TREE_DEPTH; depth >= 1; depth--) {
-      siblings.push(this.#subtreeHashAt(NodeKey.sibling(key, depth))?.slice() ?? null)
+      siblings.push(
+        depth - 1 > shared
+          ? null
+          : (this.#subtreeHashAt(NodeKey.sibling(key, depth))?.slice() ?? null),
+      )
     }
     return { key: key.slice(), siblings, leaf: this.get(key) ?? null }
   }
@@ -438,7 +472,7 @@ export class SparseMerkleTree {
   toJSON(): SparseMerkleTreeJSON {
     return {
       hashAlgorithm: this.hasher.algorithmName,
-      leaves: this.#allLeaves().map((leaf) => [leaf.hex, toHex(leaf.hash)]),
+      leaves: this.#allLeaves().map((leaf) => [toHex(leaf.key), toHex(leaf.hash)]),
     }
   }
 
@@ -453,7 +487,7 @@ export class SparseMerkleTree {
     const existingKey = (index: number): Bytes => {
       if (this.isEmpty()) throw new MerkleError({ code: 'EmptyTree' })
       const key = Number.isSafeInteger(index) && index >= 0 ? keyForLeafIndex(index) : undefined
-      if (key === undefined || !this.#leaves.has(toHex(key))) {
+      if (key === undefined || !this.#leaves.has(keyId(key))) {
         throw new MerkleError({ code: 'IndexOutOfBounds', index, len: this.leafCount })
       }
       return key
@@ -462,7 +496,7 @@ export class SparseMerkleTree {
       hasher: this.hasher,
       insert: (data) => {
         let index = Math.max(this.leafCount, this.#nextIndexHint)
-        while (this.#leaves.has(toHex(keyForLeafIndex(index)))) index++
+        while (this.#leaves.has(keyId(keyForLeafIndex(index)))) index++
         this.insert(keyForLeafIndex(index), data)
         this.#nextIndexHint = index + 1
         return index
@@ -489,13 +523,17 @@ export class SparseMerkleTree {
     }
   }
 
+  #leafById(id: string): Leaf {
+    return this.#leaves.get(id) as Leaf
+  }
+
   #allLeaves(): Leaf[] {
-    return this.#sorted.map((hex) => this.#leaves.get(hex) as Leaf)
+    return this.#sorted.map((id) => this.#leaves.get(id) as Leaf)
   }
 
   /** Stores a leaf hash. Returns true when the key was new. */
   #setLeaf(key: Bytes, hash: Bytes, keepSorted: boolean): boolean {
-    const hex = toHex(key)
+    const hex = keyId(key)
     const added = !this.#leaves.has(hex)
     this.#leaves.set(hex, makeLeaf(key.slice(), hex, hash))
     if (added && keepSorted) this.#sorted.splice(lowerBound(this.#sorted, hex), 0, hex)
@@ -511,14 +549,14 @@ export class SparseMerkleTree {
   /** Index range in `#sorted` of the leaves under `node`. */
   #range(node: NodeKey): [number, number] {
     return [
-      lowerBound(this.#sorted, toHex(node.path)),
-      upperBound(this.#sorted, toHex(node.lastKey())),
+      lowerBound(this.#sorted, keyId(node.path)),
+      upperBound(this.#sorted, keyId(node.lastKey())),
     ]
   }
 
   #leavesUnder(node: NodeKey): Leaf[] {
     const [lo, hi] = this.#range(node)
-    return this.#sorted.slice(lo, hi).map((hex) => this.#leaves.get(hex) as Leaf)
+    return this.#sorted.slice(lo, hi).map((id) => this.#leaves.get(id) as Leaf)
   }
 
   #emptyAt(level: number): Bytes {
