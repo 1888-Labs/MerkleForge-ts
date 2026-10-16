@@ -22,7 +22,8 @@ proofs, node encodings, and error behavior must match them.
   equal `merkle-hash` exactly.
 - `packages/merkle-ethereum/`: `eth_getProof` verification. Fixtures in
   `test/fixtures/` are real mainnet responses; never edit them by hand.
-- `contracts/`: Solidity verifiers (Foundry, no forge-std). Fixtures come from
+- `contracts/`: Solidity verifiers for binary, sparse, Patricia, and Ethereum
+  proofs (Foundry, no forge-std). They must compile without via-IR. Fixtures come from
   `pnpm fixtures:solidity`; CI fails if they are stale.
 - `scripts/rust-vectors/`: Rust program behind `packages/*/test/rust-*.json`.
 - `packages/*/test/`: Vitest suites, including fast-check property tests. `rust-vectors.json` files are generated

@@ -82,9 +82,11 @@ MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
   proofs have matching codecs, so a proof made in Rust verifies in TypeScript
   and vice versa.
 - **Solidity verifiers**: [`contracts/`](contracts) has `MerkleForgeBinary`
-  (single and multiproofs) and `MerkleForgeSparse` libraries for Keccak-256
-  trees. `toSolidityBinaryProof`, `toSolidityBinaryMultiProof`, and
-  `toSoliditySparseProof` shape proofs for calldata.
+  (single and multiproofs), `MerkleForgeSparse`, `MerkleForgePatricia`, and
+  `MerkleForgeEthereum` (on-chain `eth_getProof` account and storage checks)
+  for Keccak-256 proofs. `toSolidityBinaryProof`, `toSolidityBinaryMultiProof`,
+  and `toSoliditySparseProof` shape proofs for calldata. Gas figures are in
+  [contracts/README.md](contracts/README.md).
 - **Ethereum state proofs**: `verifyEthGetProof(stateRoot, response)` checks
   an `eth_getProof` response, tested against real mainnet proofs.
 
