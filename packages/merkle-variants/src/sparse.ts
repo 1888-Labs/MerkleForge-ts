@@ -70,18 +70,32 @@ interface Leaf {
   readonly key: Bytes
   readonly hex: string
   readonly hash: Bytes
+  /**
+   * Cached roots of the single-leaf subtree above this leaf: `chain[i]` is
+   * the commitment at depth `256 - i`, so `chain[0]` is the leaf hash. Grown
+   * on demand; a new `Leaf` is created whenever the hash changes.
+   */
+  readonly chain: Bytes[]
+}
+
+function makeLeaf(key: Bytes, hex: string, hash: Bytes): Leaf {
+  return { key, hex, hash, chain: [hash] }
 }
 
 /** A node position: its depth plus the key prefix of that length, zero-padded. */
 class NodeKey {
   readonly depth: number
   readonly path: Bytes
-  readonly id: string
+  #id: string | undefined
 
   private constructor(depth: number, path: Bytes) {
     this.depth = depth
     this.path = path
-    this.id = `${depth}:${toHex(path)}`
+  }
+
+  get id(): string {
+    this.#id ??= `${this.depth}:${toHex(this.path)}`
+    return this.#id
   }
 
   static of(key: Bytes, depth: number): NodeKey {
@@ -218,7 +232,7 @@ export class SparseMerkleTree {
       if (tree.#leaves.has(hex)) {
         throw new MerkleError({ code: 'DeserializationError', reason: 'duplicate sparse key' })
       }
-      tree.#leaves.set(hex, { key, hex, hash })
+      tree.#leaves.set(hex, makeLeaf(key, hex, hash))
     }
     tree.#sorted = [...tree.#leaves.keys()].sort()
     tree.#rebuild()
@@ -483,7 +497,7 @@ export class SparseMerkleTree {
   #setLeaf(key: Bytes, hash: Bytes, keepSorted: boolean): boolean {
     const hex = toHex(key)
     const added = !this.#leaves.has(hex)
-    this.#leaves.set(hex, { key: key.slice(), hex, hash })
+    this.#leaves.set(hex, makeLeaf(key.slice(), hex, hash))
     if (added && keepSorted) this.#sorted.splice(lowerBound(this.#sorted, hex), 0, hex)
     return added
   }
@@ -551,7 +565,7 @@ export class SparseMerkleTree {
     if (hi - lo === 1) {
       const leaf = this.#leaves.get(this.#sorted[lo] as string) as Leaf
       this.#purgeChildren(node)
-      const hash = this.#singleLeafSubtreeRoot(leaf.key, leaf.hash, depth)
+      const hash = this.#singleLeafSubtreeRoot(leaf, depth)
       this.#nodes.set(node.id, { kind: 'shortcut', prefix: depth, hash })
       this.#lastNodeAccesses++
       return hash
@@ -612,7 +626,7 @@ export class SparseMerkleTree {
     }
 
     if (leaves.length === 1) {
-      const hash = this.#singleLeafSubtreeRoot(first.key, first.hash, depth)
+      const hash = this.#singleLeafSubtreeRoot(first, depth)
       this.#nodes.set(NodeKey.of(first.key, depth).id, { kind: 'shortcut', prefix: depth, hash })
       this.#lastNodeAccesses++
       return hash
@@ -640,15 +654,19 @@ export class SparseMerkleTree {
     return { kind: 'batch', root, nodes }
   }
 
-  #singleLeafSubtreeRoot(key: Bytes, leafHash: Bytes, depth: number): Bytes {
-    let current = leafHash
-    for (let pathDepth = SPARSE_TREE_DEPTH; pathDepth > depth; pathDepth--) {
-      const sibling = this.#emptyAt(SPARSE_TREE_DEPTH - pathDepth)
-      current = bitAt(key, pathDepth - 1)
-        ? this.hasher.hashNodes(sibling, current)
-        : this.hasher.hashNodes(current, sibling)
+  /** Root of the subtree at `depth` that holds only `leaf`, every sibling empty. */
+  #singleLeafSubtreeRoot(leaf: Leaf, depth: number): Bytes {
+    const { chain, key } = leaf
+    for (let level = chain.length; level <= SPARSE_TREE_DEPTH - depth; level++) {
+      const current = chain[level - 1] as Bytes
+      const sibling = this.#emptyAt(level - 1)
+      chain.push(
+        bitAt(key, SPARSE_TREE_DEPTH - level)
+          ? this.hasher.hashNodes(sibling, current)
+          : this.hasher.hashNodes(current, sibling),
+      )
     }
-    return current
+    return chain[SPARSE_TREE_DEPTH - depth] as Bytes
   }
 
   #subtreeHashAt(node: NodeKey): Bytes | undefined {
@@ -661,7 +679,7 @@ export class SparseMerkleTree {
     if (lo === hi) return undefined
     if (hi - lo === 1) {
       const leaf = this.#leaves.get(this.#sorted[lo] as string) as Leaf
-      return this.#singleLeafSubtreeRoot(leaf.key, leaf.hash, node.depth)
+      return this.#singleLeafSubtreeRoot(leaf, node.depth)
     }
     return this.#subtreeRootFromLeaves(node.depth, this.#leavesUnder(node))
   }
@@ -669,7 +687,7 @@ export class SparseMerkleTree {
   #subtreeRootFromLeaves(depth: number, leaves: Leaf[]): Bytes | undefined {
     const [only] = leaves
     if (only === undefined) return undefined
-    if (leaves.length === 1) return this.#singleLeafSubtreeRoot(only.key, only.hash, depth)
+    if (leaves.length === 1) return this.#singleLeafSubtreeRoot(only, depth)
 
     const [left, right] = splitByBit(leaves, depth)
     const empty = this.#emptyAt(SPARSE_TREE_DEPTH - depth - 1)
