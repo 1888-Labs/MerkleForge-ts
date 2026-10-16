@@ -79,10 +79,11 @@ Commits use [Conventional Commits](https://www.conventionalcommits.org/):
 
 ## Features without a Rust counterpart
 
-Multiproofs, the Solidity verifiers, `merkle-hash-wasm`, and
-`merkle-ethereum` exist only here for now. Keep their formats documented
-(the multiproof bincode layout is written as the Rust struct it would be) so
-the Rust crates can adopt them without breaking compatibility.
+The Solidity verifiers, `merkle-hash-wasm`, and `merkle-ethereum` exist only
+here. Multiproofs exist in both: `BinaryMultiProof` in the Rust crate
+(unreleased, on the Rust `develop` branch) has the same serde and bincode format, checked by
+`rust-codec-vectors.json`. Keep new formats documented as the Rust struct they
+would be, so the Rust crates can adopt them without breaking compatibility.
 
 ## Pull requests
 

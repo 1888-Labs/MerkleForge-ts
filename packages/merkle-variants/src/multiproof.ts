@@ -2,6 +2,7 @@ import {
   BincodeReader,
   BincodeWriter,
   type Bytes,
+  byteArrayFromJSON,
   bytesEqual,
   type HashFunction,
   MerkleError,
@@ -100,9 +101,8 @@ export function verifyBinaryMultiProof(
 }
 
 /**
- * Encodes a multiproof with bincode 2 (standard config) as if it were the
- * Rust struct `{ leaf_indices: Vec<usize>, leaf_count: usize, hashes: Vec<[u8; N]> }`.
- * The Rust crates do not have multiproofs yet; this fixes the wire format now.
+ * Encodes a multiproof exactly like the Rust `BinaryMultiProof::to_bytes()`
+ * (bincode 2, standard config).
  */
 export function encodeBinaryMultiProof(proof: BinaryMultiProof): Bytes {
   const w = new BincodeWriter()
@@ -143,4 +143,36 @@ export function normalizeMultiProofIndices(indices: Iterable<number>, leafCount:
     }
   }
   return sorted
+}
+
+/** The `serde_json` shape of a Rust `BinaryMultiProof<[u8; 32]>`. */
+export interface BinaryMultiProofSerdeJSON {
+  leaf_indices: number[]
+  leaf_count: number
+  hashes: number[][]
+}
+
+export function multiProofToSerdeJSON(proof: BinaryMultiProof): BinaryMultiProofSerdeJSON {
+  return {
+    leaf_indices: [...proof.leafIndices],
+    leaf_count: proof.leafCount,
+    hashes: proof.hashes.map((hash) => [...hash]),
+  }
+}
+
+export function multiProofFromSerdeJSON(
+  json: BinaryMultiProofSerdeJSON,
+  digestSize = 32,
+): BinaryMultiProof {
+  if (!isValidIndexSet(json.leaf_indices, json.leaf_count)) {
+    throw new MerkleError({
+      code: 'DeserializationError',
+      reason: 'invalid multiproof leaf indices',
+    })
+  }
+  return {
+    leafIndices: [...json.leaf_indices],
+    leafCount: json.leaf_count,
+    hashes: json.hashes.map((hash) => byteArrayFromJSON(hash, digestSize)),
+  }
 }

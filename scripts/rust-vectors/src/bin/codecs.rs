@@ -38,6 +38,11 @@ fn main() {
     mpt.insert(b"doge", &vec![0xab; 300]).unwrap();
     mpt.insert(b"horse", b"stallion").unwrap();
 
+    let multi_small = small.generate_multi_proof(&[LeafIndex(4), LeafIndex(1), LeafIndex(1)]).unwrap();
+    let multi_large = large
+        .generate_multi_proof(&[0, 7, 8, 9, 150, 298, 299].map(LeafIndex))
+        .unwrap();
+
     let cases = [
         case("binary-small", &small.generate_proof(LeafIndex(4)).unwrap()),
         case("binary-large", &large.generate_proof(LeafIndex(299)).unwrap()),
@@ -47,6 +52,8 @@ fn main() {
         case("mpt-member", &mpt.generate_proof(b"dog").unwrap()),
         case("mpt-long-value", &mpt.generate_proof(b"doge").unwrap()),
         case("mpt-non-member", &mpt.generate_proof(b"dot").unwrap()),
+        case("multi-small", &multi_small),
+        case("multi-large", &multi_large),
     ];
     let roots = format!(
         "{{\"binary-small\":\"0x{}\",\"binary-large\":\"0x{}\",\"sparse-indexed\":\"0x{}\",\"sparse\":\"0x{}\",\"mpt\":\"0x{}\"}}",

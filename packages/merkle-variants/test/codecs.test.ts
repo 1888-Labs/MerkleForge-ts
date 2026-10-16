@@ -12,13 +12,17 @@ import { Keccak256 } from '@1888-labs/merkle-hash'
 import { describe, expect, it } from 'vitest'
 import {
   BinaryMerkleTree,
+  decodeBinaryMultiProof,
   decodeMptProof,
   decodeSparseProof,
+  encodeBinaryMultiProof,
   encodeMptProof,
   encodeSparseProof,
   MerklePatriciaTrie,
   mptProofFromSerdeJSON,
   mptProofToSerdeJSON,
+  multiProofFromSerdeJSON,
+  multiProofToSerdeJSON,
   SparseMerkleTree,
   sparseProofFromSerdeJSON,
   sparseProofToSerdeJSON,
@@ -133,6 +137,25 @@ describe('MptProof codecs match Rust', () => {
     expect(mptProofFromSerdeJSON(json)).toEqual(proof)
     expect(
       MerklePatriciaTrie.verifyProof(Keccak256, fromHex(vectors.roots.mpt), decodeMptProof(bytes)),
+    ).toBe(true)
+  })
+})
+
+describe('BinaryMultiProof matches the Rust BinaryMerkleTree::generate_multi_proof', () => {
+  it.each([
+    ['multi-small', 5, [4, 1, 1], 'binary-small'],
+    ['multi-large', 300, [0, 7, 8, 9, 150, 298, 299], 'binary-large'],
+  ] as const)('%s', (name, n, picks, rootName) => {
+    const tree = BinaryMerkleTree.fromLeaves(Keccak256, leaves.slice(0, n))
+    const proof = tree.generateMultiProof(picks)
+    const { json, bytes } = pick(name)
+    expect(multiProofToSerdeJSON(proof)).toEqual(json)
+    expect(toHex(encodeBinaryMultiProof(proof))).toBe(toHex(bytes))
+    expect(decodeBinaryMultiProof(bytes)).toEqual(proof)
+    expect(multiProofFromSerdeJSON(json)).toEqual(proof)
+    const items = proof.leafIndices.map((i) => leaves[i] as Uint8Array)
+    expect(
+      BinaryMerkleTree.verifyMultiProof(Keccak256, fromHex(vectors.roots[rootName]), items, proof),
     ).toBe(true)
   })
 })

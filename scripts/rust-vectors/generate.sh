@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Regenerates the Rust reference vectors used by the test suites.
-# Requires the Rust repo at ../MerkleForge (relative to this repo's root).
+# Requires the Rust repo at ../MerkleForge (relative to this repo's root), on a
+# checkout that has BinaryMultiProof (its develop branch until the next release).
 set -euo pipefail
 cd "$(dirname "$0")"
 root=../..

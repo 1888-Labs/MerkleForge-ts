@@ -13,8 +13,11 @@ export {
 } from './codecs.js'
 export {
   type BinaryMultiProof,
+  type BinaryMultiProofSerdeJSON,
   decodeBinaryMultiProof,
   encodeBinaryMultiProof,
+  multiProofFromSerdeJSON,
+  multiProofToSerdeJSON,
   verifyBinaryMultiProof,
 } from './multiproof.js'
 export {
