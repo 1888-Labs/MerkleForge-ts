@@ -1,0 +1,56 @@
+{
+  "name": "@1888-labs/merkle-ethereum",
+  "version": "0.0.0",
+  "description": "Verify Ethereum eth_getProof account and storage proofs against a state root with MerkleForge.",
+  "license": "MIT OR Apache-2.0",
+  "author": "Blessing Samuel <dicethedev>",
+  "homepage": "https://1888-labs.github.io/MerkleForge/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1888-Labs/MerkleForge-ts.git",
+    "directory": "packages/merkle-ethereum"
+  },
+  "bugs": "https://github.com/1888-Labs/MerkleForge-ts/issues",
+  "keywords": [
+    "ethereum",
+    "eth_getProof",
+    "merkle-patricia-trie",
+    "state-proof",
+    "storage-proof",
+    "light-client",
+    "merkle",
+    "merkle-proof"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@1888-labs/merkle-core": "workspace:^",
+    "@1888-labs/merkle-hash": "workspace:^",
+    "@1888-labs/merkle-variants": "workspace:^",
+    "@noble/hashes": "^2.4.0"
+  },
+  "devDependencies": {
+    "@1888-labs/merkle-hash-wasm": "workspace:^"
+  }
+}

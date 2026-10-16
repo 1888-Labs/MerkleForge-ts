@@ -1,0 +1,59 @@
+{
+  "name": "@1888-labs/merkle-hash-wasm",
+  "version": "0.0.0",
+  "description": "WebAssembly Keccak-256 and SHA-256 adapters for MerkleForge, drop-in replacements for @1888-labs/merkle-hash with identical output.",
+  "license": "MIT OR Apache-2.0",
+  "author": "Blessing Samuel <dicethedev>",
+  "homepage": "https://1888-labs.github.io/MerkleForge/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1888-Labs/MerkleForge-ts.git",
+    "directory": "packages/merkle-hash-wasm"
+  },
+  "bugs": "https://github.com/1888-Labs/MerkleForge-ts/issues",
+  "keywords": [
+    "merkle",
+    "merkle-tree",
+    "merkle-proof",
+    "blockchain",
+    "cryptography",
+    "proofs",
+    "authenticated data structures",
+    "data structures",
+    "data verification",
+    "distributed systems",
+    "wasm",
+    "webassembly",
+    "keccak"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@1888-labs/merkle-core": "workspace:^",
+    "hash-wasm": "^4.12.0"
+  },
+  "devDependencies": {
+    "@1888-labs/merkle-hash": "workspace:^"
+  }
+}

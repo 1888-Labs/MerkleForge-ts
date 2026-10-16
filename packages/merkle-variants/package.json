@@ -53,6 +53,7 @@
     "@1888-labs/merkle-core": "workspace:^"
   },
   "devDependencies": {
-    "@1888-labs/merkle-hash": "workspace:^"
+    "@1888-labs/merkle-hash": "workspace:^",
+    "@1888-labs/merkle-hash-wasm": "workspace:^"
   }
 }

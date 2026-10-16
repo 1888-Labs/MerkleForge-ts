@@ -10,7 +10,9 @@ export default defineConfig({
     alias: {
       '@1888-labs/merkle-core': src('merkle-core'),
       '@1888-labs/merkle-hash': src('merkle-hash'),
+      '@1888-labs/merkle-hash-wasm': src('merkle-hash-wasm'),
       '@1888-labs/merkle-variants': src('merkle-variants'),
+      '@1888-labs/merkle-ethereum': src('merkle-ethereum'),
     },
   },
   test: {

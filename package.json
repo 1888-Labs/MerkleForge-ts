@@ -20,7 +20,9 @@
     "check:packages": "pnpm build && pnpm -r --filter './packages/*' exec publint --strict && pnpm -r --filter './packages/*' exec attw --pack . --profile esm-only",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:packages",
     "changeset": "changeset",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "fixtures:solidity": "pnpm build && node scripts/solidity-fixtures.mjs",
+    "test:solidity": "cd contracts && forge test"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
@@ -28,6 +30,7 @@
     "@changesets/cli": "3.0.3",
     "@types/node": "^24.0.0",
     "@vitest/coverage-v8": "5.0.5",
+    "fast-check": "4.10.2",
     "publint": "0.3.25",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
