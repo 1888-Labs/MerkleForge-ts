@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {MerkleForgeBinary} from "../src/MerkleForgeBinary.sol";
 import {MerkleForgeSparse} from "../src/MerkleForgeSparse.sol";
+import {MerkleForgeEthereum} from "../src/MerkleForgeEthereum.sol";
 
 /// External wrappers so `forge test --gas-report` shows per-call verification cost.
 contract MerkleForgeVerifier {
@@ -24,5 +25,23 @@ contract MerkleForgeVerifier {
         uint256 bitmap
     ) external pure returns (bool) {
         return MerkleForgeSparse.verifyMembership(root, key, leaf, siblings, bitmap);
+    }
+
+    function verifyAccount(bytes32 stateRoot, address account, bytes[] calldata proof)
+        external
+        pure
+        returns (bool valid, uint256 balance)
+    {
+        MerkleForgeEthereum.Account memory a;
+        (valid, a) = MerkleForgeEthereum.verifyAccount(stateRoot, account, proof);
+        balance = a.balance;
+    }
+
+    function verifyStorage(bytes32 storageRoot, bytes32 slot, bytes[] calldata proof)
+        external
+        pure
+        returns (bool valid, uint256 value)
+    {
+        return MerkleForgeEthereum.verifyStorage(storageRoot, slot, proof);
     }
 }

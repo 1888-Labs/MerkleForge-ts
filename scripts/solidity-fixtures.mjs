@@ -1,10 +1,11 @@
 // Writes contracts/test/fixtures/proofs.json from the built TypeScript packages.
 // Run `pnpm fixtures:solidity` (it builds first).
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { toHex, utf8 } from '../packages/merkle-core/dist/index.js'
 import { Keccak256 } from '../packages/merkle-hash/dist/index.js'
 import {
   BinaryMerkleTree,
+  MerklePatriciaTrie,
   SparseMerkleTree,
   toSolidityBinaryMultiProof,
   toSolidityBinaryProof,
@@ -67,6 +68,65 @@ for (const [key, leaf] of [
   })
 }
 
+// Patricia witnesses from a MerkleForge Keccak trie. Short values give inline nodes, which
+// MerkleForge lists in the witness; the mainnet proofs below embed them instead.
+const trie = new MerklePatriciaTrie(Keccak256)
+const entries = [
+  ['do', 'verb'],
+  ['dog', 'puppy'],
+  ['doge', 'coin'],
+  ['horse', 'stallion'],
+  ['dogglesworth', 'a value long enough to force a hashed node reference here'],
+  ['\u0000\u0001', 'b'],
+]
+for (const [k, v] of entries) trie.insert(utf8(k), utf8(v))
+const mptRoot = toHex(trie.root())
+const mpt = [
+  'do',
+  'dog',
+  'doge',
+  'horse',
+  'dogglesworth',
+  '\u0000\u0001',
+  'dot',
+  'cat',
+  'doges',
+  '',
+].map((k) => {
+  const p = trie.generateProof(utf8(k))
+  return {
+    root: mptRoot,
+    key: toHex(utf8(k)),
+    value: p.value === null ? '0x' : toHex(p.value),
+    proof: p.proofNodes.map(toHex),
+  }
+})
+
+const mainnet = JSON.parse(
+  readFileSync(
+    new URL('../packages/merkle-ethereum/test/fixtures/mainnet-proofs.json', import.meta.url),
+    'utf8',
+  ),
+)
+const word = (quantity) => `0x${BigInt(quantity).toString(16).padStart(64, '0')}`
+const account = (r) => ({
+  address: r.address,
+  balance: word(r.balance),
+  nonce: word(r.nonce),
+  storageHash: r.storageHash,
+  codeHash: r.codeHash,
+  accountProof: r.accountProof,
+  storageCount: r.storageProof.length,
+  storage: r.storageProof.map((s) => ({ slot: word(s.key), value: word(s.value), proof: s.proof })),
+})
+const eth = {
+  blockNumber: mainnet.blockNumber,
+  stateRoot: mainnet.stateRoot,
+  contract: account(mainnet.contract),
+  eoa: account(mainnet.eoa),
+  missing: account(mainnet.missing),
+}
+
 const out = {
   binaryCount: binary.length,
   binary,
@@ -74,11 +134,14 @@ const out = {
   multi,
   sparseCount: sparse.length,
   sparse,
+  mptCount: mpt.length,
+  mpt,
+  eth,
 }
 writeFileSync(
   new URL('../contracts/test/fixtures/proofs.json', import.meta.url),
   `${JSON.stringify(out, null, 2)}\n`,
 )
 console.log(
-  `wrote ${binary.length} binary, ${multi.length} multi, ${sparse.length} sparse fixtures`,
+  `wrote ${binary.length} binary, ${multi.length} multi, ${sparse.length} sparse, ${mpt.length} Patricia fixtures and mainnet eth_getProof`,
 )
