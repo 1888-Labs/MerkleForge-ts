@@ -1,0 +1,29 @@
+{
+  "name": "merkleforge-ts",
+  "private": true,
+  "type": "module",
+  "description": "MerkleForge for TypeScript: authenticated data structures with the same trees, hashes, and proofs as the Rust crates.",
+  "license": "MIT OR Apache-2.0",
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "changeset": "changeset",
+    "release": "pnpm build && changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@changesets/cli": "3.0.3",
+    "@types/node": "^24.0.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  }
+}

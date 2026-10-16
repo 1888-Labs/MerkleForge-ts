@@ -1,0 +1,518 @@
+{
+  "leafPattern": "leaf-{i}",
+  "hashes": [
+    {
+      "algorithm": "SHA-256",
+      "primitives": {
+        "hashAbc": "0x609f6e36d2405585188d5cfd761f407c7cc46a7d3f314c88270469dde315fcd1",
+        "hashNodes": "0xb137985ff484fb600db93107c77b0365c80d78f5b429ded0fd97361d077999eb",
+        "empty": "0x6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+        "encodedAbc": "0x609f6e36d2405585188d5cfd761f407c7cc46a7d3f314c88270469dde315fcd1"
+      },
+      "trees": [
+        {
+          "leafCount": 1,
+          "height": 1,
+          "root": "0x305df59f9590c3c9ac63d2b2743c388e3792449078cebf7fb3dbe6471643b2b7",
+          "lastProof": []
+        },
+        {
+          "leafCount": 2,
+          "height": 2,
+          "root": "0x60a53eed0de87a90c8e59427c59c46253c33a76a09502a51801300927b7e6bdc",
+          "lastProof": [
+            {
+              "hash": "0x305df59f9590c3c9ac63d2b2743c388e3792449078cebf7fb3dbe6471643b2b7",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 3,
+          "height": 3,
+          "root": "0xc1f2919367f82b0ab103cf2cf7b1f42b8824db5d36b130e3da5b57d15711117e",
+          "lastProof": [
+            {
+              "hash": "0x6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+              "side": "right"
+            },
+            {
+              "hash": "0x60a53eed0de87a90c8e59427c59c46253c33a76a09502a51801300927b7e6bdc",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 4,
+          "height": 3,
+          "root": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3",
+          "lastProof": [
+            {
+              "hash": "0xfca89f57c9f8c8eb4047a7ff9d333acf9e0f3384b20b255bceab0f216dcca267",
+              "side": "left"
+            },
+            {
+              "hash": "0x60a53eed0de87a90c8e59427c59c46253c33a76a09502a51801300927b7e6bdc",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 5,
+          "height": 4,
+          "root": "0xbb22e3131385b219b7bf0c9e5bcbce54dbdd5c796daf26bdfb8a1bf13914aefa",
+          "lastProof": [
+            {
+              "hash": "0x6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+              "side": "right"
+            },
+            {
+              "hash": "0xfe43d66afa4a9a5c4f9c9da89f4ffb52635c8f342e7ffb731d68e36c5982072a",
+              "side": "right"
+            },
+            {
+              "hash": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 6,
+          "height": 4,
+          "root": "0xfeec583709b9bb9e0e4eed7369a2f8c3f20515602c9f6d483fde5b78cb1eec21",
+          "lastProof": [
+            {
+              "hash": "0xea9fc1a1b6e191b460d0d6306e3e870c173f39330f13cda1b70cfc72bdc398ba",
+              "side": "left"
+            },
+            {
+              "hash": "0xfe43d66afa4a9a5c4f9c9da89f4ffb52635c8f342e7ffb731d68e36c5982072a",
+              "side": "right"
+            },
+            {
+              "hash": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 7,
+          "height": 4,
+          "root": "0x4b1b7c01eed56510b584888960166a86de652e0eca412a1745be524e83f652a6",
+          "lastProof": [
+            {
+              "hash": "0x6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+              "side": "right"
+            },
+            {
+              "hash": "0x985bb5d36b927800876871da925a7e82abe83a9ddba5882920a007a55ea2b376",
+              "side": "left"
+            },
+            {
+              "hash": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 8,
+          "height": 4,
+          "root": "0xca6b7b3e674ac86c1027b59c87c064fc3bc27b313294c75f83bd05fdd13f0dcf",
+          "lastProof": [
+            {
+              "hash": "0x676f3782f5b3a5fb4370ed49572cedc523f4a66322269c85f2af0509d17b0a4d",
+              "side": "left"
+            },
+            {
+              "hash": "0x985bb5d36b927800876871da925a7e82abe83a9ddba5882920a007a55ea2b376",
+              "side": "left"
+            },
+            {
+              "hash": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 9,
+          "height": 5,
+          "root": "0x4892b4afa9930ac3ad5f4fd19c5ad9d817f562e70b8c2f11ed42d4dc1a554052",
+          "lastProof": [
+            {
+              "hash": "0x6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+              "side": "right"
+            },
+            {
+              "hash": "0xfe43d66afa4a9a5c4f9c9da89f4ffb52635c8f342e7ffb731d68e36c5982072a",
+              "side": "right"
+            },
+            {
+              "hash": "0xdeb82e155954d6be14592c66ccf7a1ece193eeebcdabaf747b91f44519f09f47",
+              "side": "right"
+            },
+            {
+              "hash": "0xca6b7b3e674ac86c1027b59c87c064fc3bc27b313294c75f83bd05fdd13f0dcf",
+              "side": "left"
+            }
+          ]
+        }
+      ],
+      "removals": [
+        {
+          "index": 4,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0xbdd1c5ff55b19cb6b0e7c761bf9a6ccaa27fbbfc07b74f1fabb6e911a0bd2ab3"
+        },
+        {
+          "index": 1,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0xa0c38ae26601244e74312e7d451a4b76a24594b6e983de6e3ff85c6575228c3b"
+        }
+      ]
+    },
+    {
+      "algorithm": "Keccak-256",
+      "primitives": {
+        "hashAbc": "0xc168262281c10d4285a4aecba18107ae7f43f8c07d15d2875d5f2acf1ed3d076",
+        "hashNodes": "0x00d25e3ecfd5a8430c58b5562d4a00f53ce3e76001e3683df8496c541fecb9da",
+        "empty": "0xbc36789e7a1e281436464229828f817d6612f7b477d66591ff96a9e064bcc98a",
+        "encodedAbc": "0x4e03657aea45a94fc7d47ba826c8d667c0d1e6e33a64a036ec44f58fa12d6c45"
+      },
+      "trees": [
+        {
+          "leafCount": 1,
+          "height": 1,
+          "root": "0x6966fb99fb222769a5f273cefb53fb6972ada5e9602cfdf68e6633e73f72a740",
+          "lastProof": []
+        },
+        {
+          "leafCount": 2,
+          "height": 2,
+          "root": "0x96579e7271b8671dcf79570bd7eb9dcd6992cfb320a56c835e8fcbf97b19aed0",
+          "lastProof": [
+            {
+              "hash": "0x6966fb99fb222769a5f273cefb53fb6972ada5e9602cfdf68e6633e73f72a740",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 3,
+          "height": 3,
+          "root": "0x3189b98b9e2db5a8e10a43b1613eaf021e47b0c463310fbaf779a60a8be32869",
+          "lastProof": [
+            {
+              "hash": "0xbc36789e7a1e281436464229828f817d6612f7b477d66591ff96a9e064bcc98a",
+              "side": "right"
+            },
+            {
+              "hash": "0x96579e7271b8671dcf79570bd7eb9dcd6992cfb320a56c835e8fcbf97b19aed0",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 4,
+          "height": 3,
+          "root": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9",
+          "lastProof": [
+            {
+              "hash": "0x65f21f9dd0e3f5a92217acda1cc9c04aebe34ae9c7edd32efc3c5ad41e9955fc",
+              "side": "left"
+            },
+            {
+              "hash": "0x96579e7271b8671dcf79570bd7eb9dcd6992cfb320a56c835e8fcbf97b19aed0",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 5,
+          "height": 4,
+          "root": "0xc2448b3cc98ccc58155497464bd0d5a6bce673fee0a70e3d4d8cd511b550ef23",
+          "lastProof": [
+            {
+              "hash": "0xbc36789e7a1e281436464229828f817d6612f7b477d66591ff96a9e064bcc98a",
+              "side": "right"
+            },
+            {
+              "hash": "0x6d11012f507d5c770232575322ada02affcb999d62e89ebf2d0dd391ae60976b",
+              "side": "right"
+            },
+            {
+              "hash": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 6,
+          "height": 4,
+          "root": "0xd9d09d10d1fed82f49fb521dfcde83e5878ff77aedcc778f44f84fffb7f4a1ee",
+          "lastProof": [
+            {
+              "hash": "0xed2ebef5aae3e89badf27a48b0abe18398da5cc98a462aa4c497ba4e6f3729d6",
+              "side": "left"
+            },
+            {
+              "hash": "0x6d11012f507d5c770232575322ada02affcb999d62e89ebf2d0dd391ae60976b",
+              "side": "right"
+            },
+            {
+              "hash": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 7,
+          "height": 4,
+          "root": "0xc8250914de4598dda8e5ee87f2782b25e7cc2fa7cdf0e0a606e98266ca58e5ee",
+          "lastProof": [
+            {
+              "hash": "0xbc36789e7a1e281436464229828f817d6612f7b477d66591ff96a9e064bcc98a",
+              "side": "right"
+            },
+            {
+              "hash": "0x2a78299d5cce622db296502bf945a1ae9601e591df509079146800594c4a7a96",
+              "side": "left"
+            },
+            {
+              "hash": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 8,
+          "height": 4,
+          "root": "0xe2c962d2e27aad030f8cb6d892ed53b0a76fad3d98075e363647e5d040b9cb83",
+          "lastProof": [
+            {
+              "hash": "0xf2174b60f316635eac137316920b8667da2d34da4daf81eb82da77b4e21a82ca",
+              "side": "left"
+            },
+            {
+              "hash": "0x2a78299d5cce622db296502bf945a1ae9601e591df509079146800594c4a7a96",
+              "side": "left"
+            },
+            {
+              "hash": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 9,
+          "height": 5,
+          "root": "0x6ce10f539791274111bc395d1546eaa00ee337492fea23d83137757ba2412ded",
+          "lastProof": [
+            {
+              "hash": "0xbc36789e7a1e281436464229828f817d6612f7b477d66591ff96a9e064bcc98a",
+              "side": "right"
+            },
+            {
+              "hash": "0x6d11012f507d5c770232575322ada02affcb999d62e89ebf2d0dd391ae60976b",
+              "side": "right"
+            },
+            {
+              "hash": "0x1c05d5fb1caaec828c210855c781b832064772c898eae7f2b956d86a728c2fce",
+              "side": "right"
+            },
+            {
+              "hash": "0xe2c962d2e27aad030f8cb6d892ed53b0a76fad3d98075e363647e5d040b9cb83",
+              "side": "left"
+            }
+          ]
+        }
+      ],
+      "removals": [
+        {
+          "index": 4,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0x11029884e1696980b7ca7af5c52f405878d1aadb7fb7ad4a61fc6048daf59cb9"
+        },
+        {
+          "index": 1,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0x7003292c601ee892f99ba29be00db05bdaee4896b068b733a9cb99deff79e882"
+        }
+      ]
+    },
+    {
+      "algorithm": "BLAKE3",
+      "primitives": {
+        "hashAbc": "0x937e8001f498d21e6310a4efdd171101f312a34a85fdbc09b61fa583450369ea",
+        "hashNodes": "0x08b410f5667be0e193b1e656744af326331e0685f602322434d3180fc634af68",
+        "empty": "0x6d9b403ecd871a9942264b6bc1bad22dc0b197234719ab300830bf1ee6ad4a0e",
+        "encodedAbc": "0x937e8001f498d21e6310a4efdd171101f312a34a85fdbc09b61fa583450369ea"
+      },
+      "trees": [
+        {
+          "leafCount": 1,
+          "height": 1,
+          "root": "0x193e538c1c3f7575c9cba972c5b49df2483436d7848541fe162c1dafc8335ff2",
+          "lastProof": []
+        },
+        {
+          "leafCount": 2,
+          "height": 2,
+          "root": "0x37062fd48b23f1483e3a61f8f5bcf242b8a19d82e4c38f4a460accd88a29f1bf",
+          "lastProof": [
+            {
+              "hash": "0x193e538c1c3f7575c9cba972c5b49df2483436d7848541fe162c1dafc8335ff2",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 3,
+          "height": 3,
+          "root": "0x91842c2092ff0e985cf5e7640b4973751cecda4fe17dd92c6b2cfe0408748361",
+          "lastProof": [
+            {
+              "hash": "0x6d9b403ecd871a9942264b6bc1bad22dc0b197234719ab300830bf1ee6ad4a0e",
+              "side": "right"
+            },
+            {
+              "hash": "0x37062fd48b23f1483e3a61f8f5bcf242b8a19d82e4c38f4a460accd88a29f1bf",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 4,
+          "height": 3,
+          "root": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f",
+          "lastProof": [
+            {
+              "hash": "0x618b2d47845bee85e6b9fa03e2187695fd92719c027a59ed21b92219839bd40d",
+              "side": "left"
+            },
+            {
+              "hash": "0x37062fd48b23f1483e3a61f8f5bcf242b8a19d82e4c38f4a460accd88a29f1bf",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 5,
+          "height": 4,
+          "root": "0x153af3430428a71307aea1f1d41ed8c03e87945be0a9357fb851b2432e2e55bd",
+          "lastProof": [
+            {
+              "hash": "0x6d9b403ecd871a9942264b6bc1bad22dc0b197234719ab300830bf1ee6ad4a0e",
+              "side": "right"
+            },
+            {
+              "hash": "0xc81dc66711af4490fd7bc41c924e5941c341e053798fb650c27a765d09c2c60d",
+              "side": "right"
+            },
+            {
+              "hash": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 6,
+          "height": 4,
+          "root": "0x463f1d9325a723fcf5b343ee233be3da1ef4a64bf13188d9581697c679e1752b",
+          "lastProof": [
+            {
+              "hash": "0x5602377d1c3b8d4c63cf5d41506320441fd9ea4296e3f094dd760ec3eb160c2a",
+              "side": "left"
+            },
+            {
+              "hash": "0xc81dc66711af4490fd7bc41c924e5941c341e053798fb650c27a765d09c2c60d",
+              "side": "right"
+            },
+            {
+              "hash": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 7,
+          "height": 4,
+          "root": "0xce175d655e271f8029412758f33720fe39e38e7e34000b392e802f1e307453b1",
+          "lastProof": [
+            {
+              "hash": "0x6d9b403ecd871a9942264b6bc1bad22dc0b197234719ab300830bf1ee6ad4a0e",
+              "side": "right"
+            },
+            {
+              "hash": "0x1e2bae8e47a578db7118c9987cd0b2d0fe44f47e5c0426945bf330e9584e467f",
+              "side": "left"
+            },
+            {
+              "hash": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 8,
+          "height": 4,
+          "root": "0x2ae6ae01d86680549fd1208adb3286e28d944ff2541b8c8f89fb2d7a7b2b32f7",
+          "lastProof": [
+            {
+              "hash": "0x83a1eafa768a27c92b7feb3576378c980faa1bab46b44755c9cd873ab9f4d290",
+              "side": "left"
+            },
+            {
+              "hash": "0x1e2bae8e47a578db7118c9987cd0b2d0fe44f47e5c0426945bf330e9584e467f",
+              "side": "left"
+            },
+            {
+              "hash": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f",
+              "side": "left"
+            }
+          ]
+        },
+        {
+          "leafCount": 9,
+          "height": 5,
+          "root": "0xb3eb04d75be14fc93f440f25ebd2c0903202b0c2d1c8b1a093a40853cbde5c17",
+          "lastProof": [
+            {
+              "hash": "0x6d9b403ecd871a9942264b6bc1bad22dc0b197234719ab300830bf1ee6ad4a0e",
+              "side": "right"
+            },
+            {
+              "hash": "0xc81dc66711af4490fd7bc41c924e5941c341e053798fb650c27a765d09c2c60d",
+              "side": "right"
+            },
+            {
+              "hash": "0x6f32e8e7f1f619103b636c40199f297fe58966ae7383a34bf1c18b4d3b43bdad",
+              "side": "right"
+            },
+            {
+              "hash": "0x2ae6ae01d86680549fd1208adb3286e28d944ff2541b8c8f89fb2d7a7b2b32f7",
+              "side": "left"
+            }
+          ]
+        }
+      ],
+      "removals": [
+        {
+          "index": 4,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0xbf17e876dc1c809bef6e7b8ab76a853c4f1ecba2486e4a7f0fe545be8a87b17f"
+        },
+        {
+          "index": 1,
+          "leafCount": 4,
+          "height": 3,
+          "root": "0x82430e8349d8fc811270832e5f722f71edab4974bd7ca75a15195848ba5aead8"
+        }
+      ]
+    }
+  ]
+}

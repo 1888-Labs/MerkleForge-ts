@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/merkle-core" },
+    { "path": "packages/merkle-hash" },
+    { "path": "packages/merkle-variants" }
+  ]
+}

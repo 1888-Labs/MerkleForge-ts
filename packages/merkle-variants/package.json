@@ -1,0 +1,55 @@
+{
+  "name": "@1888-labs/merkle-variants",
+  "version": "0.0.0",
+  "description": "Binary Merkle tree (sparse Merkle tree and Merkle Patricia trie coming) for MerkleForge.",
+  "license": "MIT OR Apache-2.0",
+  "author": "Blessing Samuel <dicethedev>",
+  "homepage": "https://1888-labs.github.io/MerkleForge/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1888-Labs/MerkleForge-ts.git",
+    "directory": "packages/merkle-variants"
+  },
+  "bugs": "https://github.com/1888-Labs/MerkleForge-ts/issues",
+  "keywords": [
+    "merkle",
+    "merkle-tree",
+    "merkle-proof",
+    "blockchain",
+    "cryptography",
+    "proofs",
+    "authenticated data structures",
+    "data structures",
+    "data verification",
+    "distributed systems"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@1888-labs/merkle-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@1888-labs/merkle-hash": "workspace:^"
+  }
+}
