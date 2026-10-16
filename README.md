@@ -12,7 +12,9 @@ A project by [1888 Labs](https://github.com/1888-Labs). Docs: <https://1888-labs
 |---------|------|-----------------|
 | [`@1888-labs/merkle-core`](packages/merkle-core) | `HashFunction` and `MerkleTree` interfaces, proofs, `MerkleError`, byte helpers | `merkle-core` |
 | [`@1888-labs/merkle-hash`](packages/merkle-hash) | `Sha256`, `Keccak256`, `Blake3` adapters | `merkleforge-hash` |
-| [`@1888-labs/merkle-variants`](packages/merkle-variants) | `BinaryMerkleTree`, `SparseMerkleTree`, `MerklePatriciaTrie` | `merkle-variants` |
+| [`@1888-labs/merkle-variants`](packages/merkle-variants) | `BinaryMerkleTree` (with multiproofs), `SparseMerkleTree`, `MerklePatriciaTrie`, proof codecs | `merkle-variants` |
+| [`@1888-labs/merkle-hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256`, identical output, about 6x faster Keccak | none |
+| [`@1888-labs/merkle-ethereum`](packages/merkle-ethereum) | Verify `eth_getProof` account and storage proofs against a state root | none |
 
 | Variant | Use it for | Proofs |
 |---------|------------|--------|
@@ -70,6 +72,22 @@ const witness = trie.generateProof(utf8('dog'))
 MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
 ```
 
+## More features
+
+- **Multiproofs**: `tree.generateMultiProof([1, 4, 9])` proves several leaves
+  with shared siblings; verify with `BinaryMerkleTree.verifyMultiProof`.
+- **Rust-compatible proof formats**: `encodeMerkleProof` / `decodeMerkleProof`
+  produce the same bytes as Rust's `proof.to_bytes()` (bincode), and
+  `merkleProofToSerdeJSON` the same JSON as `serde_json`. Sparse and Patricia
+  proofs have matching codecs, so a proof made in Rust verifies in TypeScript
+  and vice versa.
+- **Solidity verifiers**: [`contracts/`](contracts) has `MerkleForgeBinary`
+  (single and multiproofs) and `MerkleForgeSparse` libraries for Keccak-256
+  trees. `toSolidityBinaryProof`, `toSolidityBinaryMultiProof`, and
+  `toSoliditySparseProof` shape proofs for calldata.
+- **Ethereum state proofs**: `verifyEthGetProof(stateRoot, response)` checks
+  an `eth_getProof` response, tested against real mainnet proofs.
+
 ## How it maps to Rust
 
 | Rust | TypeScript |
@@ -97,6 +115,10 @@ pnpm test    # vitest, including cross-checks against vectors from the Rust crat
 pnpm lint    # biome
 pnpm check   # everything CI runs
 ```
+
+Property tests (fast-check) cover random trees, edit sequences, and
+tampering. `pnpm test:solidity` runs the Foundry tests for `contracts/` after
+`pnpm fixtures:solidity` regenerates their fixtures.
 
 The expected values in `packages/*/test/rust-*.json` come from the Rust
 crates. With the Rust repo cloned next to this one, regenerate them with

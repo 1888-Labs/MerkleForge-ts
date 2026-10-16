@@ -36,15 +36,21 @@ pnpm check   # lint, typecheck, test, and package checks
 | `pnpm coverage` | Tests with V8 coverage |
 | `pnpm lint` / `pnpm format` | Biome lint and format check / auto-fix |
 | `pnpm check:packages` | publint and arethetypeswrong on what npm will ship |
+| `pnpm fixtures:solidity` | Regenerate `contracts/test/fixtures` from the TypeScript packages |
+| `pnpm test:solidity` | Foundry tests for the Solidity verifiers (needs [Foundry](https://getfoundry.sh)) |
 
 ## Layout
 
 ```
 packages/
-  merkle-core/      interfaces, proof types, MerkleError, byte helpers
-  merkle-hash/      Sha256, Keccak256, Blake3 adapters (@noble/hashes)
-  merkle-variants/  BinaryMerkleTree, SparseMerkleTree, MerklePatriciaTrie
-    test/rust-vectors.json   expected values generated from the Rust crates
+  merkle-core/       interfaces, proof types, MerkleError, byte helpers, bincode codec
+  merkle-hash/       Sha256, Keccak256, Blake3 adapters (@noble/hashes)
+  merkle-hash-wasm/  WebAssembly Keccak256 and Sha256 (hash-wasm)
+  merkle-variants/   trees, multiproofs, proof codecs, Solidity proof shapes
+    test/rust-*.json   expected values generated from the Rust crates
+  merkle-ethereum/   eth_getProof verification (mainnet fixtures in test/fixtures)
+contracts/           Solidity verifiers + Foundry tests
+scripts/rust-vectors/   Rust program that regenerates the vectors
 ```
 
 ## Workflow
@@ -70,6 +76,13 @@ Commits use [Conventional Commits](https://www.conventionalcommits.org/):
   encoding are consensus-sensitive. Changes need focused regression tests.
 - TypeScript APIs should feel native: throw `MerkleError` instead of returning
   results, use `Uint8Array` for bytes, and pass the `HashFunction` as a value.
+
+## Features without a Rust counterpart
+
+Multiproofs, the Solidity verifiers, `merkle-hash-wasm`, and
+`merkle-ethereum` exist only here for now. Keep their formats documented
+(the multiproof bincode layout is written as the Rust struct it would be) so
+the Rust crates can adopt them without breaking compatibility.
 
 ## Pull requests
 

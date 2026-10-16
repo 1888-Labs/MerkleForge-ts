@@ -2,6 +2,10 @@
 
 Merkle tree implementations for MerkleForge: `BinaryMerkleTree`, `SparseMerkleTree` (256-bit keys, membership and non-membership proofs), and an Ethereum-compatible `MerklePatriciaTrie`. Roots and proofs match the Rust `merkle-variants` crate.
 
+Also includes binary multiproofs, Rust-compatible proof codecs (bincode and
+`serde_json` shapes), and helpers that shape proofs for the MerkleForge
+Solidity verifiers.
+
 Part of [MerkleForge for TypeScript](https://github.com/1888-Labs/MerkleForge-ts), a project by [1888 Labs](https://github.com/1888-Labs). Docs: <https://1888-labs.github.io/MerkleForge/>
 
 ```sh

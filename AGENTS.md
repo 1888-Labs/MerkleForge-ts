@@ -18,7 +18,14 @@ proofs, node encodings, and error behavior must match them.
   `@noble/hashes`.
 - `packages/merkle-variants/`: `BinaryMerkleTree`, `SparseMerkleTree`,
   `MerklePatriciaTrie`, and Patricia RLP/hex-prefix helpers.
-- `packages/*/test/`: Vitest suites. `rust-vectors.json` files are generated
+- `packages/merkle-hash-wasm/`: WebAssembly `Keccak256`/`Sha256`; output must
+  equal `merkle-hash` exactly.
+- `packages/merkle-ethereum/`: `eth_getProof` verification. Fixtures in
+  `test/fixtures/` are real mainnet responses; never edit them by hand.
+- `contracts/`: Solidity verifiers (Foundry, no forge-std). Fixtures come from
+  `pnpm fixtures:solidity`; CI fails if they are stale.
+- `scripts/rust-vectors/`: Rust program behind `packages/*/test/rust-*.json`.
+- `packages/*/test/`: Vitest suites, including fast-check property tests. `rust-vectors.json` files are generated
   from the Rust crates; `fixtures/ethereum_trie/` holds the official Ethereum
   trie vectors.
 - `.changeset/`: pending release notes. `.github/workflows/`: CI and release.
@@ -47,6 +54,9 @@ proofs, node encodings, and error behavior must match them.
   hex-prefix encoding are consensus-sensitive. Changes require regression
   tests against Rust-generated vectors.
 - Do not edit Ethereum fixture expectations or Rust vectors to make a test pass.
+- Proof codecs must stay byte-identical to Rust's bincode `standard()` and
+  `serde_json` output; regenerate `rust-codec-vectors.json` to confirm.
+- Solidity verifiers must return `false`, never revert, on malformed proofs.
 
 ## Checks
 
@@ -55,9 +65,10 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm check:packages
+pnpm fixtures:solidity && pnpm test:solidity   # when touching contracts or proof shapes
 ```
 
-`pnpm check` runs all four. If a check cannot run, say so and why.
+`pnpm check` runs the first four. If a check cannot run, say so and why.
 
 ## Git and pull requests
 
