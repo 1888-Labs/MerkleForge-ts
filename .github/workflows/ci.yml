@@ -69,6 +69,27 @@ jobs:
           if (!BinaryMerkleTree.verify(Keccak256, tree.root(), utf8('b'), tree.generateProof(1))) process.exit(1)
           "
 
+  solidity:
+    name: Solidity verifiers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: pnpm install --frozen-lockfile
+      # Fixtures come from the TypeScript packages, so the contracts are checked against them.
+      - run: pnpm fixtures:solidity
+      - name: Fixtures are up to date
+        run: git diff --exit-code contracts/test/fixtures
+      - run: forge fmt --check
+        working-directory: contracts
+      - run: forge test --gas-report
+        working-directory: contracts
+
   changeset:
     name: Changeset present
     if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
