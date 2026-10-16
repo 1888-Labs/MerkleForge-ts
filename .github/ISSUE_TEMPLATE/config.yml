@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/1888-Labs/MerkleForge-ts/security/advisories/new
+    about: Report vulnerabilities privately.
+  - name: Documentation
+    url: https://1888-labs.github.io/MerkleForge/
+    about: Guides and API docs for MerkleForge.

@@ -1,0 +1,32 @@
+name: Bug report
+description: Something behaves differently from the docs or the Rust crates
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the expected and actual result.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Package versions and runtime
+      placeholder: '@1888-labs/merkle-variants 0.1.0, Node 24'
+    validations:
+      required: true
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security
+      options:
+        - label: This is not a security vulnerability (those go through SECURITY.md)
+          required: true
