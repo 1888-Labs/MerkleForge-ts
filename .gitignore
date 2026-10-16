@@ -1,5 +1,7 @@
-node_modules/
-dist/
-*.tsbuildinfo
 coverage/
+dist/
 .DS_Store
+node_modules/
+*.tsbuildinfo
+scripts/rust-vectors/target/
+scripts/rust-vectors/Cargo.lock

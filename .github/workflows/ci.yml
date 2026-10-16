@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, develop]
   pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -13,8 +14,21 @@ permissions:
   contents: read
 
 jobs:
-  check:
-    name: Lint, build, and test (Node ${{ matrix.node }})
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  test:
+    name: Test (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,6 +42,46 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm build
-      - run: pnpm test
+      - run: pnpm typecheck
+      - run: pnpm coverage
+
+  packages:
+    name: Package checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # publint and arethetypeswrong check what npm users will actually install.
+      - run: pnpm check:packages
+      - name: Smoke-test the built packages from plain Node
+        working-directory: packages/merkle-variants
+        run: |
+          node --input-type=module -e "
+          import { utf8 } from '@1888-labs/merkle-core'
+          import { Keccak256 } from '@1888-labs/merkle-hash'
+          import { BinaryMerkleTree } from '@1888-labs/merkle-variants'
+          const tree = BinaryMerkleTree.fromLeaves(Keccak256, ['a', 'b', 'c'].map(utf8))
+          if (!BinaryMerkleTree.verify(Keccak256, tree.root(), utf8('b'), tree.generateProof(1))) process.exit(1)
+          "
+
+  changeset:
+    name: Changeset present
+    if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Warns only: docs, CI, and test-only PRs do not need a changeset.
+      - run: pnpm changeset status --since=origin/${{ github.base_ref }} || echo "::warning::No changeset found. Run 'pnpm changeset' if this PR changes a published package."
