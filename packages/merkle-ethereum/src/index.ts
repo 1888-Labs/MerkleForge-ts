@@ -6,9 +6,9 @@ import {
   type HashFunction,
   MerkleError,
   toHex,
-} from '@1888-labs/merkle-core'
-import { Keccak256 } from '@1888-labs/merkle-hash'
-import { decodeRlp, MerklePatriciaTrie, type RlpValue } from '@1888-labs/merkle-variants'
+} from '@merkleforge/core'
+import { Keccak256 } from '@merkleforge/hash'
+import { decodeRlp, MerklePatriciaTrie, type RlpValue } from '@merkleforge/variants'
 import { keccak_256 } from '@noble/hashes/sha3.js'
 
 /** Bytes, or a hex string as returned by JSON-RPC (`0x`-prefixed). */

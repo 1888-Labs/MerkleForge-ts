@@ -19,7 +19,7 @@ Ethereum numbers use a real mainnet WETH proof (9 account nodes, 7 storage nodes
 ## Shaping proofs in TypeScript
 
 ```ts
-import { toSolidityBinaryProof, toSoliditySparseProof } from '@1888-labs/merkle-variants'
+import { toSolidityBinaryProof, toSoliditySparseProof } from '@merkleforge/variants'
 
 const { leafIndex, leafCount, siblings } = toSolidityBinaryProof(tree.generateProof(3))
 const { key, siblings: sparseSiblings, bitmap } = toSoliditySparseProof(smt.generateMembershipProof(key))

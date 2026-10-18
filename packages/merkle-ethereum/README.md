@@ -7,13 +7,13 @@
   </a>
 </p>
 
-<h1 align="center">@1888-labs/merkle-ethereum</h1>
+<h1 align="center">@merkleforge/ethereum</h1>
 
 <p align="center">Verify Ethereum <code>eth_getProof</code> responses against a trusted state root,<br>with no trust in the RPC that served them.</p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@1888-labs/merkle-ethereum"><img alt="npm" src="https://img.shields.io/npm/v/@1888-labs/merkle-ethereum?style=flat-square&label=npm&color=000000"></a>
-  <a href="https://www.npmjs.com/package/@1888-labs/merkle-ethereum"><img alt="downloads" src="https://img.shields.io/npm/dm/@1888-labs/merkle-ethereum?style=flat-square&label=downloads&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/ethereum"><img alt="npm" src="https://img.shields.io/npm/v/@merkleforge/ethereum?style=flat-square&label=npm&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/ethereum"><img alt="downloads" src="https://img.shields.io/npm/dm/@merkleforge/ethereum?style=flat-square&label=downloads&color=000000"></a>
   <a href="https://github.com/1888-Labs/MerkleForge-ts/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/1888-Labs/MerkleForge-ts/ci.yml?branch=main&style=flat-square&label=CI"></a>
   <a href="#license"><img alt="license" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-000000?style=flat-square"></a>
 </p>
@@ -25,21 +25,23 @@
   <a href="https://github.com/1888-Labs/MerkleForge">Rust crates</a>
 </p>
 
-`@1888-labs/merkle-ethereum` checks [EIP-1186](https://eips.ethereum.org/EIPS/eip-1186)
+`@merkleforge/ethereum` checks [EIP-1186](https://eips.ethereum.org/EIPS/eip-1186)
 proofs: account balance, nonce, code hash, and storage slots. It is built on the
 MerkleForge `MerklePatriciaTrie` and tested against real mainnet proofs.
+
+> Formerly published as `@1888-labs/merkle-ethereum` (deprecated). From 0.2.0, install `@merkleforge/ethereum`; the API is unchanged.
 
 ## Install
 
 ```sh
-npm i @1888-labs/merkle-ethereum
+npm i @merkleforge/ethereum
 ```
 
 ## Usage
 
 ```ts
-import { toHex } from '@1888-labs/merkle-core'
-import { mappingSlot, verifyEthGetProof } from '@1888-labs/merkle-ethereum'
+import { toHex } from '@merkleforge/core'
+import { mappingSlot, verifyEthGetProof } from '@merkleforge/ethereum'
 
 // stateRoot must come from a source you trust: a light client, or a block header you verified.
 const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -65,7 +67,7 @@ storage[0].value // holder's WETH balance, proven
 
 Every verifier throws `MerkleError` with code `InvalidProof` on a mismatch.
 Pass `{ hasher: await createKeccak256Wasm() }` from
-[`@1888-labs/merkle-hash-wasm`](https://www.npmjs.com/package/@1888-labs/merkle-hash-wasm)
+[`@merkleforge/hash-wasm`](https://www.npmjs.com/package/@merkleforge/hash-wasm)
 to verify faster. For on-chain checks, see `MerkleForgeEthereum` in the
 [Solidity verifiers](https://github.com/1888-Labs/MerkleForge-ts/tree/main/contracts).
 
@@ -77,14 +79,14 @@ one version.
 
 | Package | What it holds |
 |---------|---------------|
-| [`@1888-labs/merkle-core`](https://www.npmjs.com/package/@1888-labs/merkle-core) | Interfaces, proof types, errors, codecs, and byte helpers |
-| [`@1888-labs/merkle-hash`](https://www.npmjs.com/package/@1888-labs/merkle-hash) | SHA-256, Keccak-256, and BLAKE3 adapters |
-| [`@1888-labs/merkle-hash-wasm`](https://www.npmjs.com/package/@1888-labs/merkle-hash-wasm) | WebAssembly Keccak-256 and SHA-256, same digests, faster |
-| [`@1888-labs/merkle-variants`](https://www.npmjs.com/package/@1888-labs/merkle-variants) | Binary, Sparse, and Patricia trees, multiproofs, codecs |
-| **[`@1888-labs/merkle-ethereum`](https://www.npmjs.com/package/@1888-labs/merkle-ethereum)** | Verify `eth_getProof` account and storage proofs |
+| [`@merkleforge/core`](https://www.npmjs.com/package/@merkleforge/core) | Interfaces, proof types, errors, codecs, and byte helpers |
+| [`@merkleforge/hash`](https://www.npmjs.com/package/@merkleforge/hash) | SHA-256, Keccak-256, and BLAKE3 adapters |
+| [`@merkleforge/hash-wasm`](https://www.npmjs.com/package/@merkleforge/hash-wasm) | WebAssembly Keccak-256 and SHA-256, same digests, faster |
+| [`@merkleforge/variants`](https://www.npmjs.com/package/@merkleforge/variants) | Binary, Sparse, and Patricia trees, multiproofs, codecs |
+| **[`@merkleforge/ethereum`](https://www.npmjs.com/package/@merkleforge/ethereum)** | Verify `eth_getProof` account and storage proofs |
 
 Staging builds from `develop` are published under the `next` tag
-(`npm i @1888-labs/merkle-ethereum@next`). MerkleForge has not been independently
+(`npm i @merkleforge/ethereum@next`). MerkleForge has not been independently
 audited; report vulnerabilities via the [security policy](https://github.com/1888-Labs/MerkleForge-ts/blob/main/.github/SECURITY.md).
 
 ## License

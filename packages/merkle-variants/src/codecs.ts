@@ -4,7 +4,7 @@ import {
   type Bytes,
   byteArrayFromJSON,
   MerkleError,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 import type { MptProof } from './patricia.js'
 import { SPARSE_KEY_BYTES, type SparseMerkleProof } from './sparse.js'
 

@@ -40,26 +40,26 @@ importers:
 
   packages/merkle-ethereum:
     dependencies:
-      '@1888-labs/merkle-core':
+      '@merkleforge/core':
         specifier: workspace:^
         version: link:../merkle-core
-      '@1888-labs/merkle-hash':
+      '@merkleforge/hash':
         specifier: workspace:^
         version: link:../merkle-hash
-      '@1888-labs/merkle-variants':
+      '@merkleforge/variants':
         specifier: workspace:^
         version: link:../merkle-variants
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0
     devDependencies:
-      '@1888-labs/merkle-hash-wasm':
+      '@merkleforge/hash-wasm':
         specifier: workspace:^
         version: link:../merkle-hash-wasm
 
   packages/merkle-hash:
     dependencies:
-      '@1888-labs/merkle-core':
+      '@merkleforge/core':
         specifier: workspace:^
         version: link:../merkle-core
       '@noble/hashes':
@@ -68,27 +68,27 @@ importers:
 
   packages/merkle-hash-wasm:
     dependencies:
-      '@1888-labs/merkle-core':
+      '@merkleforge/core':
         specifier: workspace:^
         version: link:../merkle-core
       hash-wasm:
         specifier: ^4.12.0
         version: 4.12.0
     devDependencies:
-      '@1888-labs/merkle-hash':
+      '@merkleforge/hash':
         specifier: workspace:^
         version: link:../merkle-hash
 
   packages/merkle-variants:
     dependencies:
-      '@1888-labs/merkle-core':
+      '@merkleforge/core':
         specifier: workspace:^
         version: link:../merkle-core
     devDependencies:
-      '@1888-labs/merkle-hash':
+      '@merkleforge/hash':
         specifier: workspace:^
         version: link:../merkle-hash
-      '@1888-labs/merkle-hash-wasm':
+      '@merkleforge/hash-wasm':
         specifier: workspace:^
         version: link:../merkle-hash-wasm
 

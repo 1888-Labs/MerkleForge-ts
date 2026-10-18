@@ -4,11 +4,11 @@
   "commit": false,
   "fixed": [
     [
-      "@1888-labs/merkle-core",
-      "@1888-labs/merkle-hash",
-      "@1888-labs/merkle-variants",
-      "@1888-labs/merkle-hash-wasm",
-      "@1888-labs/merkle-ethereum"
+      "@merkleforge/core",
+      "@merkleforge/hash",
+      "@merkleforge/variants",
+      "@merkleforge/hash-wasm",
+      "@merkleforge/ethereum"
     ]
   ],
   "access": "public",

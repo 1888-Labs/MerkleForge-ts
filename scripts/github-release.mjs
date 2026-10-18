@@ -18,7 +18,7 @@ const packages = readdirSync('packages')
   .map((dir) => ({ dir, ...JSON.parse(readFileSync(`${dir}/package.json`, 'utf8')) }))
   .filter((pkg) => !pkg.private)
 
-const { version } = packages.find((pkg) => pkg.name === '@1888-labs/merkle-core')
+const { version } = packages.find((pkg) => pkg.name === '@merkleforge/core')
 const tag = `v${version}`
 
 const gh = (...argv) =>
@@ -67,7 +67,7 @@ const notes = [
         `- [\`${name}@${version}\`](https://www.npmjs.com/package/${name}/v/${version})`,
     )
     .join('\n'),
-  `\`\`\`sh\nnpm i @1888-labs/merkle-variants${npmTag} @1888-labs/merkle-hash${npmTag} @1888-labs/merkle-core${npmTag}\n\`\`\``,
+  `\`\`\`sh\nnpm i @merkleforge/variants${npmTag} @merkleforge/hash${npmTag} @merkleforge/core${npmTag}\n\`\`\``,
 ].join('\n\n')
 
 const argv = ['release', 'create', tag, '--title', tag, '--notes', notes]

@@ -4,7 +4,7 @@ import {
   type HashFunction,
   LEAF_PREFIX,
   NODE_PREFIX,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 import { createKeccak, createSHA256, type IHasher } from 'hash-wasm'
 
 const LEAF = Uint8Array.of(LEAF_PREFIX)
@@ -18,7 +18,7 @@ function digest(hasher: IHasher, ...parts: Bytes[]): Bytes {
 
 /**
  * Keccak-256 backed by WebAssembly. Same output and `algorithmName` as
- * `Keccak256` from `@1888-labs/merkle-hash` (about 6x faster in Node), so trees,
+ * `Keccak256` from `@merkleforge/hash` (about 6x faster in Node), so trees,
  * proofs, and JSON built with either are interchangeable.
  */
 export async function createKeccak256Wasm(): Promise<HashFunction> {
@@ -34,7 +34,7 @@ export async function createKeccak256Wasm(): Promise<HashFunction> {
 
 /**
  * SHA-256 backed by WebAssembly. Same output and `algorithmName` as `Sha256`
- * from `@1888-labs/merkle-hash`.
+ * from `@merkleforge/hash`.
  */
 export async function createSha256Wasm(): Promise<HashFunction> {
   const hasher = await createSHA256()
