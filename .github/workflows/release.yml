@@ -1,12 +1,16 @@
 name: Release
 
+# main: stable releases. Pending changesets open a "Version packages" PR;
+# merging it publishes to npm under `latest` and creates the vX.Y.Z release.
+# develop: staging. Pending changesets publish X.Y.Z-next.<datetime> snapshots
+# under the `next` dist-tag and create a GitHub prerelease.
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 concurrency:
-  group: release
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -15,7 +19,7 @@ permissions:
 jobs:
   release:
     name: Version or publish
-    if: github.repository == '1888-Labs/MerkleForge-ts'
+    if: github.repository == '1888-Labs/MerkleForge-ts' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -34,15 +38,60 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm check:packages
-      # With pending changesets this opens a "Version packages" PR.
-      # Merging that PR runs this job again, which publishes to npm.
-      - uses: changesets/action@v2
+      - id: changesets
+        uses: changesets/action@v2
         with:
-          version: pnpm changeset version
-          publish: pnpm release
-          title: 'chore(release): version packages'
-          commit: 'chore(release): version packages'
+          version-script: pnpm changeset version
+          publish-script: pnpm release
+          pr-title: 'chore(release): version packages'
+          commit-message: 'chore(release): version packages'
+          # One vX.Y.Z release for the whole fixed group, made below,
+          # instead of a tag and release per package.
+          create-github-releases: false
+          push-git-tags: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+      # The publish script only runs when no changesets are pending. The script
+      # skips versions that already have a release.
+      - if: steps.changesets.outputs.has-changesets == 'false'
+        run: node scripts/github-release.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  staging:
+    name: Publish next snapshot
+    if: github.repository == '1888-Labs/MerkleForge-ts' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - id: pending
+        run: |
+          if ls .changeset/*.md >/dev/null 2>&1; then echo "changesets=true" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.pending.outputs.changesets == 'true'
+        uses: pnpm/action-setup@v6
+      - if: steps.pending.outputs.changesets == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - if: steps.pending.outputs.changesets == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.pending.outputs.changesets == 'true'
+        run: pnpm check
+      - if: steps.pending.outputs.changesets == 'true'
+        run: |
+          pnpm changeset version --snapshot next
+          pnpm build
+          pnpm changeset publish --tag next --no-git-tag
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+      - if: steps.pending.outputs.changesets == 'true'
+        run: node scripts/github-release.mjs --prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
