@@ -1,4 +1,4 @@
-import { concatBytes, defineHashFunction, LEAF_PREFIX, NODE_PREFIX } from '@1888-labs/merkle-core'
+import { concatBytes, defineHashFunction, LEAF_PREFIX, NODE_PREFIX } from '@merkleforge/core'
 import { keccak_256 } from '@noble/hashes/sha3.js'
 
 /**

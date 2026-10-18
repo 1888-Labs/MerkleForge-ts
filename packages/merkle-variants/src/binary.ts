@@ -10,7 +10,7 @@ import {
   type ProofSide,
   type TreeMetadata,
   toHex,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 import {
   type BinaryMultiProof,
   multiProofSiblingPositions,

@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@1888-labs/merkle-variants"><img alt="npm" src="https://img.shields.io/npm/v/@1888-labs/merkle-variants?style=flat-square&label=npm&color=000000"></a>
-  <a href="https://www.npmjs.com/package/@1888-labs/merkle-variants/v/next"><img alt="npm next" src="https://img.shields.io/npm/v/@1888-labs/merkle-variants/next?style=flat-square&label=next&color=6B6B6B"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/variants"><img alt="npm" src="https://img.shields.io/npm/v/@merkleforge/variants?style=flat-square&label=npm&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/variants/v/next"><img alt="npm next" src="https://img.shields.io/npm/v/@merkleforge/variants/next?style=flat-square&label=next&color=6B6B6B"></a>
   <a href="https://github.com/1888-Labs/MerkleForge-ts/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/1888-Labs/MerkleForge-ts/ci.yml?branch=main&style=flat-square&label=CI"></a>
   <a href="https://github.com/1888-Labs/MerkleForge"><img alt="Rust crates" src="https://img.shields.io/badge/rust-MerkleForge-000000?style=flat-square"></a>
   <a href="#license"><img alt="license" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-000000?style=flat-square"></a>
@@ -57,11 +57,11 @@ with an idiomatic TypeScript API:
 
 | Package | Role | Rust equivalent |
 |---------|------|-----------------|
-| [`@1888-labs/merkle-core`](packages/merkle-core) | `HashFunction` and `MerkleTree` interfaces, proofs, `MerkleError`, byte helpers | `merkle-core` |
-| [`@1888-labs/merkle-hash`](packages/merkle-hash) | `Sha256`, `Keccak256`, `Blake3` adapters | `merkleforge-hash` |
-| [`@1888-labs/merkle-variants`](packages/merkle-variants) | `BinaryMerkleTree` (with multiproofs), `SparseMerkleTree`, `MerklePatriciaTrie`, proof codecs | `merkle-variants` |
-| [`@1888-labs/merkle-hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256`, identical output, about 6x faster Keccak | none |
-| [`@1888-labs/merkle-ethereum`](packages/merkle-ethereum) | Verify `eth_getProof` account and storage proofs against a state root | none |
+| [`@merkleforge/core`](packages/merkle-core) | `HashFunction` and `MerkleTree` interfaces, proofs, `MerkleError`, byte helpers | `merkle-core` |
+| [`@merkleforge/hash`](packages/merkle-hash) | `Sha256`, `Keccak256`, `Blake3` adapters | `merkleforge-hash` |
+| [`@merkleforge/variants`](packages/merkle-variants) | `BinaryMerkleTree` (with multiproofs), `SparseMerkleTree`, `MerklePatriciaTrie`, proof codecs | `merkle-variants` |
+| [`@merkleforge/hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256`, identical output, about 6x faster Keccak | none |
+| [`@merkleforge/ethereum`](packages/merkle-ethereum) | Verify `eth_getProof` account and storage proofs against a state root | none |
 
 | Variant | Use it for | Proofs |
 |---------|------------|--------|
@@ -72,21 +72,21 @@ with an idiomatic TypeScript API:
 ## Install
 
 ```sh
-npm i @1888-labs/merkle-variants @1888-labs/merkle-hash @1888-labs/merkle-core
+npm i @merkleforge/variants @merkleforge/hash @merkleforge/core
 ```
 
 Staging builds from `develop` are published under the `next` tag:
 
 ```sh
-npm i @1888-labs/merkle-variants@next @1888-labs/merkle-hash@next @1888-labs/merkle-core@next
+npm i @merkleforge/variants@next @merkleforge/hash@next @merkleforge/core@next
 ```
 
 ## Usage
 
 ```ts
-import { toHex, utf8 } from '@1888-labs/merkle-core'
-import { Keccak256 } from '@1888-labs/merkle-hash'
-import { BinaryMerkleTree } from '@1888-labs/merkle-variants'
+import { toHex, utf8 } from '@merkleforge/core'
+import { Keccak256 } from '@merkleforge/hash'
+import { BinaryMerkleTree } from '@merkleforge/variants'
 
 const leaves = ['alice:100', 'bob:250', 'carol:75'].map(utf8)
 const tree = BinaryMerkleTree.fromLeaves(Keccak256, leaves)
@@ -101,7 +101,7 @@ console.log(toHex(root))
 Sparse Merkle tree with non-membership proofs:
 
 ```ts
-import { SparseMerkleTree } from '@1888-labs/merkle-variants'
+import { SparseMerkleTree } from '@merkleforge/variants'
 
 const smt = new SparseMerkleTree(Keccak256)
 const alice = Keccak256.hash(utf8('alice')) // any 32-byte key
@@ -114,7 +114,7 @@ SparseMerkleTree.verifyMembership(Keccak256, smt.root()!, alice, utf8('balance:1
 Ethereum-compatible Patricia trie:
 
 ```ts
-import { MerklePatriciaTrie } from '@1888-labs/merkle-variants'
+import { MerklePatriciaTrie } from '@merkleforge/variants'
 
 const trie = new MerklePatriciaTrie(Keccak256)
 trie.insert(utf8('dog'), utf8('puppy'))

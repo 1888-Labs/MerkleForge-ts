@@ -6,7 +6,7 @@ import {
   bytesEqual,
   type HashFunction,
   MerkleError,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 
 /**
  * One proof for several leaves of a `BinaryMerkleTree`. `hashes` holds only

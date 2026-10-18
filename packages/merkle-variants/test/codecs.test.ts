@@ -7,8 +7,8 @@ import {
   merkleProofToSerdeJSON,
   toHex,
   utf8,
-} from '@1888-labs/merkle-core'
-import { Keccak256 } from '@1888-labs/merkle-hash'
+} from '@merkleforge/core'
+import { Keccak256 } from '@merkleforge/hash'
 import { describe, expect, it } from 'vitest'
 import {
   BinaryMerkleTree,

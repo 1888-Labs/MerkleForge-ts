@@ -1,6 +1,6 @@
-import { bytesEqual, decodeMerkleProof, encodeMerkleProof, toHex } from '@1888-labs/merkle-core'
-import { Blake3, Keccak256, Sha256 } from '@1888-labs/merkle-hash'
-import { createKeccak256Wasm } from '@1888-labs/merkle-hash-wasm'
+import { bytesEqual, decodeMerkleProof, encodeMerkleProof, toHex } from '@merkleforge/core'
+import { Blake3, Keccak256, Sha256 } from '@merkleforge/hash'
+import { createKeccak256Wasm } from '@merkleforge/hash-wasm'
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import {

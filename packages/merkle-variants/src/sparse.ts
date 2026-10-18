@@ -9,7 +9,7 @@ import {
   type ProofNode,
   type TreeMetadata,
   toHex,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 
 /** Fixed tree depth for MerkleForge sparse Merkle trees. */
 export const SPARSE_TREE_DEPTH = 256

@@ -1,5 +1,5 @@
-import { fromHex, isMerkleError, toHex, utf8 } from '@1888-labs/merkle-core'
-import { createKeccak256Wasm } from '@1888-labs/merkle-hash-wasm'
+import { fromHex, isMerkleError, toHex, utf8 } from '@merkleforge/core'
+import { createKeccak256Wasm } from '@merkleforge/hash-wasm'
 import { describe, expect, it } from 'vitest'
 import {
   EMPTY_TRIE_ROOT,

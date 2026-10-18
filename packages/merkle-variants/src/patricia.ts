@@ -9,7 +9,7 @@ import {
   type TreeMetadata,
   toHex,
   utf8,
-} from '@1888-labs/merkle-core'
+} from '@merkleforge/core'
 
 const EMPTY_RLP = 0x80
 const SHORT_STRING_OFFSET = 0x80

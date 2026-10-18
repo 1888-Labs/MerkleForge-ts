@@ -1,4 +1,4 @@
-import { concatBytes, defineHashFunction, utf8 } from '@1888-labs/merkle-core'
+import { concatBytes, defineHashFunction, utf8 } from '@merkleforge/core'
 import { blake3 } from '@noble/hashes/blake3.js'
 
 const LEAF_CONTEXT = utf8('MerkleForge 2026 leaf v1')

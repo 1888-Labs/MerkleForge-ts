@@ -62,9 +62,9 @@ jobs:
         working-directory: packages/merkle-variants
         run: |
           node --input-type=module -e "
-          import { utf8 } from '@1888-labs/merkle-core'
-          import { Keccak256 } from '@1888-labs/merkle-hash'
-          import { BinaryMerkleTree } from '@1888-labs/merkle-variants'
+          import { utf8 } from '@merkleforge/core'
+          import { Keccak256 } from '@merkleforge/hash'
+          import { BinaryMerkleTree } from '@merkleforge/variants'
           const tree = BinaryMerkleTree.fromLeaves(Keccak256, ['a', 'b', 'c'].map(utf8))
           if (!BinaryMerkleTree.verify(Keccak256, tree.root(), utf8('b'), tree.generateProof(1))) process.exit(1)
           "

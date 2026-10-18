@@ -1,5 +1,5 @@
-import { fromHex, isMerkleError, type MerkleProof, toHex, utf8 } from '@1888-labs/merkle-core'
-import { Blake3, Keccak256, Sha256 } from '@1888-labs/merkle-hash'
+import { fromHex, isMerkleError, type MerkleProof, toHex, utf8 } from '@merkleforge/core'
+import { Blake3, Keccak256, Sha256 } from '@merkleforge/hash'
 import { describe, expect, it } from 'vitest'
 import { BinaryMerkleTree } from '../src/index.js'
 import vectors from './rust-vectors.json' with { type: 'json' }
