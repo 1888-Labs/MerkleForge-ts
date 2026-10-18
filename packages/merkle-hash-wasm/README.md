@@ -34,6 +34,8 @@ Keccak-256 is about 6x faster than the pure-JS adapter in Node. That matters
 most for `SparseMerkleTree`, where every new key costs about 256 hashes, and
 for verifying `eth_getProof` responses in bulk. SHA-256 is only slightly faster.
 
+> Formerly published as `@1888-labs/merkle-hash-wasm` (deprecated). From 0.2.0, install `@merkleforge/hash-wasm`; the API is unchanged.
+
 ## Install
 
 ```sh

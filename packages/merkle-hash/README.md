@@ -30,6 +30,8 @@
 `@merkleforge/variants` takes one, so switching algorithms is a one-word
 change, and each produces the same digests as the Rust `merkleforge-hash` crate.
 
+> Formerly published as `@1888-labs/merkle-hash` (deprecated). From 0.2.0, install `@merkleforge/hash`; the API is unchanged.
+
 ## Install
 
 ```sh

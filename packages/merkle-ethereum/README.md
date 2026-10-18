@@ -29,6 +29,8 @@
 proofs: account balance, nonce, code hash, and storage slots. It is built on the
 MerkleForge `MerklePatriciaTrie` and tested against real mainnet proofs.
 
+> Formerly published as `@1888-labs/merkle-ethereum` (deprecated). From 0.2.0, install `@merkleforge/ethereum`; the API is unchanged.
+
 ## Install
 
 ```sh

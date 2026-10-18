@@ -81,6 +81,20 @@ Staging builds from `develop` are published under the `next` tag:
 npm i @merkleforge/variants@next @merkleforge/hash@next @merkleforge/core@next
 ```
 
+### Migrating from `@1888-labs/merkle-*`
+
+Up to 0.1.1 the packages were published as `@1888-labs/merkle-*`. Those names
+are deprecated; from 0.2.0 the same code ships under `@merkleforge`. Swap the
+dependency and the import path, nothing else changes:
+
+| Before | Now |
+|--------|-----|
+| `@1888-labs/merkle-core` | `@merkleforge/core` |
+| `@1888-labs/merkle-hash` | `@merkleforge/hash` |
+| `@1888-labs/merkle-hash-wasm` | `@merkleforge/hash-wasm` |
+| `@1888-labs/merkle-variants` | `@merkleforge/variants` |
+| `@1888-labs/merkle-ethereum` | `@merkleforge/ethereum` |
+
 ## Usage
 
 ```ts

@@ -35,6 +35,8 @@ Use it directly when you want to:
 - pass proofs around, or encode them for Rust, without pulling in the trees;
 - handle `MerkleError` in code that only depends on the shared types.
 
+> Formerly published as `@1888-labs/merkle-core` (deprecated). From 0.2.0, install `@merkleforge/core`; the API is unchanged.
+
 ## Install
 
 ```sh

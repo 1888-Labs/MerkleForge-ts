@@ -35,6 +35,8 @@ your own adapter without changing the tree API.
 | `SparseMerkleTree` | Key-value state over 256-bit keys (rollups, registries) | Membership and non-membership |
 | `MerklePatriciaTrie` | Ethereum-compatible tries; with `Keccak256` roots match Ethereum | RLP witnesses, membership and non-membership |
 
+> Formerly published as `@1888-labs/merkle-variants` (deprecated). From 0.2.0, install `@merkleforge/variants`; the API is unchanged.
+
 ## Install
 
 ```sh
