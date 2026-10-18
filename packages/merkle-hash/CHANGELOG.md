@@ -1,5 +1,13 @@
 # @1888-labs/merkle-hash
 
+## 0.1.1
+
+### Patch Changes
+
+- 51dcd3f: Rewrite the package READMEs with MerkleForge branding, API tables, and more examples, and sharpen package descriptions and keywords for npm search.
+- Updated dependencies [51dcd3f]
+  - @1888-labs/merkle-core@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

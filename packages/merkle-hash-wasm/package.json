@@ -1,6 +1,6 @@
 {
   "name": "@1888-labs/merkle-hash-wasm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fast WebAssembly Keccak-256 and SHA-256 for Merkle trees, about 6x faster Keccak, same output as @1888-labs/merkle-hash. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
