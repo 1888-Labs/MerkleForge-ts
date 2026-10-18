@@ -199,7 +199,7 @@ version.
 
 | Branch | npm tag | Version | GitHub |
 |--------|---------|---------|--------|
-| `develop` (staging) | `next` | `0.2.0-next.20261018193000`, on every push with pending changesets | Prerelease |
+| `develop` (staging) | `next` | `0.2.1-next.2026-10-18-1930` (UTC), on every push with pending changesets | Prerelease |
 | `main` (stable) | `latest` | `0.2.0`, when the "Version packages" PR is merged | Release `v0.2.0` |
 
 Merging `develop` into `main` opens the "Version packages" PR, which bumps

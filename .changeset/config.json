@@ -16,6 +16,6 @@
   "updateInternalDependencies": "patch",
   "snapshot": {
     "useCalculatedVersion": true,
-    "prereleaseTemplate": "{tag}.{datetime}"
+    "prereleaseTemplate": "{tag}"
   }
 }
