@@ -13,6 +13,7 @@ export default defineConfig({
       '@merkleforge/hash-wasm': src('merkle-hash-wasm'),
       '@merkleforge/variants': src('merkle-variants'),
       '@merkleforge/ethereum': src('merkle-ethereum'),
+      '@merkleforge/openzeppelin': src('merkle-openzeppelin'),
     },
   },
   test: {

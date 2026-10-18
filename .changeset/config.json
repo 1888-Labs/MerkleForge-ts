@@ -8,7 +8,8 @@
       "@merkleforge/hash",
       "@merkleforge/variants",
       "@merkleforge/hash-wasm",
-      "@merkleforge/ethereum"
+      "@merkleforge/ethereum",
+      "@merkleforge/openzeppelin"
     ]
   ],
   "access": "public",
