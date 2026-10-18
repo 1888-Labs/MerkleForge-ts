@@ -2,7 +2,7 @@ name: Release
 
 # main: stable releases. Pending changesets open a "Version packages" PR;
 # merging it publishes to npm under `latest` and creates the vX.Y.Z release.
-# develop: staging. Pending changesets publish X.Y.Z-next.<datetime> snapshots
+# develop: staging. Pending changesets publish X.Y.Z-next.YYYY-MM-DD-HHMM (UTC) snapshots
 # under the `next` dist-tag and create a GitHub prerelease.
 on:
   push:
@@ -85,7 +85,8 @@ jobs:
         run: pnpm check
       - if: steps.pending.outputs.changesets == 'true'
         run: |
-          pnpm changeset version --snapshot next
+          # One segment, so a time like 0905 is not a numeric identifier with a leading zero.
+          pnpm changeset version --snapshot "next.$(date -u +%Y-%m-%d-%H%M)"
           pnpm build
           pnpm changeset publish --tag next --no-git-tag
         env:

@@ -70,9 +70,12 @@ const notes = [
   `\`\`\`sh\nnpm i @merkleforge/variants${npmTag} @merkleforge/hash${npmTag} @merkleforge/core${npmTag}\n\`\`\``,
 ].join('\n\n')
 
-const argv = ['release', 'create', tag, '--title', tag, '--notes', notes]
+// v0.2.1-next.2026-10-18-0905 is titled "v0.2.1-next · 2026-10-18 09:05 UTC".
+const snapshot = version.match(/^(.+-next)\.(\d{4}-\d{2}-\d{2})-(\d{2})(\d{2})$/)
+const title = snapshot ? `v${snapshot[1]} · ${snapshot[2]} ${snapshot[3]}:${snapshot[4]} UTC` : tag
+const argv = ['release', 'create', tag, '--title', title, '--notes', notes]
 if (target) argv.push('--target', target)
 if (prerelease) argv.push('--prerelease')
 else argv.push('--latest')
-if (dryRun) console.log(`${tag}${prerelease ? ' (prerelease)' : ''}\n\n${notes}`)
+if (dryRun) console.log(`${title}${prerelease ? ' (prerelease)' : ''}\n\n${notes}`)
 else console.log(gh(...argv).trim())
