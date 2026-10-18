@@ -1,6 +1,6 @@
 {
   "name": "@1888-labs/merkle-hash-wasm",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "WebAssembly Keccak-256 and SHA-256 adapters for MerkleForge, drop-in replacements for @1888-labs/merkle-hash with identical output.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",

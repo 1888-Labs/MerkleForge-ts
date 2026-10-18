@@ -1,6 +1,6 @@
 {
   "name": "@1888-labs/merkle-ethereum",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Verify Ethereum eth_getProof account and storage proofs against a state root with MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",

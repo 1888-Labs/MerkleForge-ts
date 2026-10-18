@@ -1,6 +1,6 @@
 {
   "name": "@1888-labs/merkle-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Traits, shared types, proofs, and errors for MerkleForge. No tree logic.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
