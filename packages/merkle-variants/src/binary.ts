@@ -11,6 +11,12 @@ import {
   type TreeMetadata,
   toHex,
 } from '@1888-labs/merkle-core'
+import {
+  type BinaryMultiProof,
+  multiProofSiblingPositions,
+  normalizeMultiProofIndices,
+  verifyBinaryMultiProof,
+} from './multiproof.js'
 
 /** JSON form of a `BinaryMerkleTree`: the hash name and the leaf digests in hex. */
 export interface BinaryMerkleTreeJSON {
@@ -172,6 +178,34 @@ export class BinaryMerkleTree implements MerkleTree {
     }
 
     return { leafIndex: index, leafCount: this.#leafCount, path }
+  }
+
+  /**
+   * Builds one proof for several leaves. Indices may be in any order and may
+   * repeat; the proof lists them sorted and de-duplicated in `leafIndices`.
+   * Throws `EmptyTree`, `IndexOutOfBounds`, or `InvalidProofStructure` (no indices).
+   */
+  generateMultiProof(indices: Iterable<number>): BinaryMultiProof {
+    const leafIndices = normalizeMultiProofIndices(indices, this.#leafCount)
+    const layerStarts: number[] = []
+    for (let start = 0, width = this.#leafCapacity(); width >= 1; width /= 2) {
+      layerStarts.push(start)
+      start += width
+    }
+    const hashes = multiProofSiblingPositions(leafIndices, this.#leafCount).map(([layer, offset]) =>
+      this.#node((layerStarts[layer] as number) + offset).slice(),
+    )
+    return { leafIndices, leafCount: this.#leafCount, hashes }
+  }
+
+  /** Checks a multiproof. `leaves` are the raw leaf data in `proof.leafIndices` order. */
+  static verifyMultiProof(
+    hasher: HashFunction,
+    expectedRoot: Bytes,
+    leaves: readonly Bytes[],
+    proof: BinaryMultiProof,
+  ): boolean {
+    return verifyBinaryMultiProof(hasher, expectedRoot, leaves, proof)
   }
 
   metadata(): TreeMetadata {

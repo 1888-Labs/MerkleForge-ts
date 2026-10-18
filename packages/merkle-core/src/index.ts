@@ -1,5 +1,15 @@
 export { type Bytes, bytesEqual, concatBytes, fromHex, toHex, utf8 } from './bytes.js'
 export {
+  BincodeReader,
+  BincodeWriter,
+  byteArrayFromJSON,
+  decodeMerkleProof,
+  encodeMerkleProof,
+  type MerkleProofSerdeJSON,
+  merkleProofFromSerdeJSON,
+  merkleProofToSerdeJSON,
+} from './codec.js'
+export {
   isMerkleError,
   MerkleError,
   type MerkleErrorCode,

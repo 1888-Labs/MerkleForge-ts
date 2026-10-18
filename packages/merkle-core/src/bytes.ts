@@ -8,10 +8,12 @@ export function utf8(text: string): Bytes {
   return encoder.encode(text)
 }
 
+const HEX_BYTES = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0'))
+
 /** Encodes bytes as lowercase hex with a `0x` prefix. */
 export function toHex(bytes: Bytes): string {
   let out = '0x'
-  for (const byte of bytes) out += byte.toString(16).padStart(2, '0')
+  for (const byte of bytes) out += HEX_BYTES[byte] as string
   return out
 }
 

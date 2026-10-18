@@ -1,6 +1,6 @@
 {
   "name": "@1888-labs/merkle-hash",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "SHA-256, Keccak-256, and BLAKE3 hash adapters for MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",

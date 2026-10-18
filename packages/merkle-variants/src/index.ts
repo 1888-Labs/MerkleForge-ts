@@ -1,1 +1,60 @@
 export { BinaryMerkleTree, type BinaryMerkleTreeJSON } from './binary.js'
+export {
+  decodeMptProof,
+  decodeSparseProof,
+  encodeMptProof,
+  encodeSparseProof,
+  type MptProofSerdeJSON,
+  mptProofFromSerdeJSON,
+  mptProofToSerdeJSON,
+  type SparseMerkleProofSerdeJSON,
+  sparseProofFromSerdeJSON,
+  sparseProofToSerdeJSON,
+} from './codecs.js'
+export {
+  type BinaryMultiProof,
+  type BinaryMultiProofSerdeJSON,
+  decodeBinaryMultiProof,
+  encodeBinaryMultiProof,
+  multiProofFromSerdeJSON,
+  multiProofToSerdeJSON,
+  verifyBinaryMultiProof,
+} from './multiproof.js'
+export {
+  bytesToNibbles,
+  computeRootHash,
+  decodeRlp,
+  encodeRlp,
+  hashNode,
+  hpDecode,
+  hpEncode,
+  MerklePatriciaTrie,
+  type MerklePatriciaTrieJSON,
+  type MptNode,
+  type MptProof,
+  type Nibbles,
+  type NodeRef,
+  type RlpValue,
+  rlpDecode,
+  rlpEncode,
+} from './patricia.js'
+export {
+  type Hex,
+  type SolidityBinaryMultiProof,
+  type SolidityBinaryProof,
+  type SoliditySparseProof,
+  toSolidityBinaryMultiProof,
+  toSolidityBinaryProof,
+  toSoliditySparseProof,
+} from './solidity.js'
+export {
+  BATCH_DEPTH,
+  bitAt,
+  EMPTY_HASH_LEVELS,
+  isSparseMembershipProof,
+  SPARSE_KEY_BYTES,
+  SPARSE_TREE_DEPTH,
+  type SparseMerkleProof,
+  SparseMerkleTree,
+  type SparseMerkleTreeJSON,
+} from './sparse.js'

@@ -2,7 +2,15 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["@1888-labs/merkle-core", "@1888-labs/merkle-hash", "@1888-labs/merkle-variants"]],
+  "fixed": [
+    [
+      "@1888-labs/merkle-core",
+      "@1888-labs/merkle-hash",
+      "@1888-labs/merkle-variants",
+      "@1888-labs/merkle-hash-wasm",
+      "@1888-labs/merkle-ethereum"
+    ]
+  ],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch"

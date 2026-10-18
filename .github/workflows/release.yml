@@ -3,20 +3,24 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: release
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
+  contents: read
 
 jobs:
   release:
     name: Version or publish
+    if: github.repository == '1888-Labs/MerkleForge-ts'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
@@ -26,8 +30,12 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
       - run: pnpm test
-      # Opens a "Version packages" PR from pending changesets; merging that PR publishes to npm.
+      - run: pnpm check:packages
+      # With pending changesets this opens a "Version packages" PR.
+      # Merging that PR runs this job again, which publishes to npm.
       - uses: changesets/action@v1
         with:
           version: pnpm changeset version
