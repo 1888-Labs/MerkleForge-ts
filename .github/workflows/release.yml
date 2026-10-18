@@ -36,7 +36,7 @@ jobs:
       - run: pnpm check:packages
       # With pending changesets this opens a "Version packages" PR.
       # Merging that PR runs this job again, which publishes to npm.
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           version: pnpm changeset version
           publish: pnpm release
