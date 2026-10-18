@@ -1,6 +1,6 @@
 {
   "name": "@merkleforge/core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Merkle tree and Merkle proof interfaces for TypeScript: MerkleTree and HashFunction types, proof types, errors, and Rust-compatible (bincode, serde) proof codecs. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
