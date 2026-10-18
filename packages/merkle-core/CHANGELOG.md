@@ -1,5 +1,11 @@
 # @1888-labs/merkle-core
 
+## 0.2.0
+
+### Minor Changes
+
+- 8fa8166: Rename the packages to the `@merkleforge` scope: `@1888-labs/merkle-core` is now `@merkleforge/core`, and likewise `hash`, `hash-wasm`, `variants`, and `ethereum`. The API is unchanged; update your imports. The `@1888-labs/merkle-*` packages are deprecated.
+
 ## 0.1.1
 
 ### Patch Changes
