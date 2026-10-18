@@ -6,4 +6,4 @@
 "@1888-labs/merkle-ethereum": patch
 ---
 
-Rewrite the package READMEs with MerkleForge branding, API tables, and more examples.
+Rewrite the package READMEs with MerkleForge branding, API tables, and more examples, and sharpen package descriptions and keywords for npm search.
