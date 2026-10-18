@@ -1,10 +1,57 @@
-# MerkleForge for TypeScript
+<p align="center">
+  <a href="https://1888-labs.github.io/MerkleForge/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/1888-Labs/MerkleForge/main/assets/brand/svg/lockup/merkleforge-lockup-white.svg">
+      <img alt="MerkleForge" src="https://raw.githubusercontent.com/1888-Labs/MerkleForge/main/assets/brand/svg/lockup/merkleforge-lockup-black.svg" width="420">
+    </picture>
+  </a>
+</p>
 
-Authenticated data structures for TypeScript and JavaScript: the same trees,
-hashes, and proofs as the [MerkleForge Rust crates](https://github.com/1888-Labs/MerkleForge),
-with roots and proofs that match the Rust implementation byte for byte.
+<p align="center">
+  Authenticated data structures for TypeScript and JavaScript: Binary, Sparse, and<br>
+  Ethereum-compatible Patricia Merkle trees, byte-for-byte compatible with the Rust crates.
+</p>
 
-A project by [1888 Labs](https://github.com/1888-Labs). Docs: <https://1888-labs.github.io/MerkleForge/>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@1888-labs/merkle-variants"><img alt="npm" src="https://img.shields.io/npm/v/@1888-labs/merkle-variants?style=flat-square&label=npm&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@1888-labs/merkle-variants/v/next"><img alt="npm next" src="https://img.shields.io/npm/v/@1888-labs/merkle-variants/next?style=flat-square&label=next&color=6B6B6B"></a>
+  <a href="https://github.com/1888-Labs/MerkleForge-ts/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/1888-Labs/MerkleForge-ts/ci.yml?branch=main&style=flat-square&label=CI"></a>
+  <a href="https://github.com/1888-Labs/MerkleForge"><img alt="Rust crates" src="https://img.shields.io/badge/rust-MerkleForge-000000?style=flat-square"></a>
+  <a href="#license"><img alt="license" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-000000?style=flat-square"></a>
+</p>
+
+<p align="center">
+  <a href="https://1888-labs.github.io/MerkleForge/">Website</a> ·
+  <a href="https://1888-labs.github.io/MerkleForge/docs/getting-started">Docs</a> ·
+  <a href="https://github.com/1888-Labs/MerkleForge">Rust crates</a> ·
+  <a href="contracts/README.md">Solidity verifiers</a> ·
+  <a href="https://github.com/1888-Labs/MerkleForge-ts/releases">Releases</a> ·
+  <a href="CONTRIBUTING.md">Contributing</a>
+</p>
+
+---
+
+> ⚠️ **Not yet audited.** MerkleForge is tested with unit, property-based,
+> cross-implementation, and Ethereum vector tests, but has not had an
+> independent security audit. Review it against your threat model before using
+> it in security-critical systems, and [report issues responsibly](.github/SECURITY.md).
+
+## Why MerkleForge for TypeScript
+
+The same trees, hashes, and proofs as the [MerkleForge Rust crates](https://github.com/1888-Labs/MerkleForge),
+with an idiomatic TypeScript API:
+
+- **Cross-language proofs.** Roots and proofs match the Rust implementation byte for byte,
+  so a proof made by a Rust server verifies in a browser, and the other way round.
+- **Three variants, one interface.** Every tree implements `MerkleTree`, so you can switch
+  variants without rewriting integration code.
+- **Pluggable hashes.** `Sha256`, `Keccak256`, `Blake3`, WebAssembly Keccak-256 and SHA-256,
+  or your own with `defineHashFunction`.
+- **Stateless proofs.** Verify with only a trusted root, the leaf, and an `O(log n)` proof.
+- **On-chain and Ethereum.** Solidity verifiers for every proof type, and `eth_getProof`
+  verification tested against real mainnet proofs.
+- **Small.** ESM only, Node.js 22+, browsers, Deno, and Bun. The only runtime dependency
+  is [`@noble/hashes`](https://github.com/paulmillr/noble-hashes).
 
 ## Packages
 
@@ -28,8 +75,11 @@ A project by [1888 Labs](https://github.com/1888-Labs). Docs: <https://1888-labs
 npm i @1888-labs/merkle-variants @1888-labs/merkle-hash @1888-labs/merkle-core
 ```
 
-ESM only. Works in Node.js 22+, browsers, Deno, and Bun. The only runtime
-dependency is [`@noble/hashes`](https://github.com/paulmillr/noble-hashes).
+Staging builds from `develop` are published under the `next` tag:
+
+```sh
+npm i @1888-labs/merkle-variants@next @1888-labs/merkle-hash@next @1888-labs/merkle-core@next
+```
 
 ## Usage
 
@@ -127,9 +177,20 @@ crates. With the Rust repo cloned next to this one, regenerate them with
 `scripts/rust-vectors/generate.sh`. The Patricia trie is also tested against
 the official Ethereum trie fixtures.
 
-Releases use [Changesets](https://github.com/changesets/changesets): add one
-with `pnpm changeset`, and merging the generated "Version packages" PR on
-`main` publishes to npm.
+## Releases
+
+Releases use [Changesets](https://github.com/changesets/changesets). Add one
+with `pnpm changeset` in any PR that changes a package. All packages share one
+version.
+
+| Branch | npm tag | Version | GitHub |
+|--------|---------|---------|--------|
+| `develop` (staging) | `next` | `0.2.0-next.20261018193000`, on every push with pending changesets | Prerelease |
+| `main` (stable) | `latest` | `0.2.0`, when the "Version packages" PR is merged | Release `v0.2.0` |
+
+Merging `develop` into `main` opens the "Version packages" PR, which bumps
+versions and writes the changelogs. Merging that PR publishes to npm and
+creates the GitHub release. See the [releases page](https://github.com/1888-Labs/MerkleForge-ts/releases).
 
 ## Contributing
 
@@ -137,6 +198,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT
 Report vulnerabilities privately via [SECURITY.md](.github/SECURITY.md).
 MerkleForge has not been independently audited.
 
+## Projects using MerkleForge
+
+- **[ProofStream](https://github.com/1888-Labs/ProofStream)**: commits live DEX
+  activity with a Keccak-256 binary tree so a browser can verify a single
+  record against the dataset root.
+
+Built something with MerkleForge? Open a PR to add it here.
+
 ## License
 
 Licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) at your option.
+
+---
+
+*Maintained by [1888 Labs](https://github.com/1888-Labs), led by [Blessing Samuel](https://github.com/dicethedev), and open-source contributors.
+Brand assets and usage rules: [MerkleForge brand kit](https://github.com/1888-Labs/MerkleForge/blob/main/assets/brand/BRAND.md).*
