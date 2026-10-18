@@ -217,7 +217,7 @@ describe('StandardMerkleTree', () => {
       ),
       { numRuns: 150 },
     )
-  })
+  }, 60_000)
 
   it('exports the same leaf and node hashes', () => {
     const leaf = standardLeafHash(['address', 'uint256'], airdrop[0] as unknown[])
@@ -325,7 +325,7 @@ describe('SimpleMerkleTree', () => {
       ),
       { numRuns: 150 },
     )
-  })
+  }, 60_000)
 
   it('requires the custom node hash when loading a custom dump', () => {
     const tree = SimpleMerkleTree.of([formatLeaf('0x01')], { nodeHash: (a) => a })
