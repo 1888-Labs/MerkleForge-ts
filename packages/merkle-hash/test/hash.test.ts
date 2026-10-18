@@ -1,4 +1,4 @@
-import { toHex, utf8 } from '@1888-labs/merkle-core'
+import { toHex, utf8 } from '@merkleforge/core'
 import { describe, expect, it } from 'vitest'
 import { Blake3, Keccak256, Sha256 } from '../src/index.js'
 import vectors from './rust-vectors.json' with { type: 'json' }

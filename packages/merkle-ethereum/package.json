@@ -1,5 +1,5 @@
 {
-  "name": "@1888-labs/merkle-ethereum",
+  "name": "@merkleforge/ethereum",
   "version": "0.1.1",
   "description": "Verify Ethereum eth_getProof (EIP-1186) account and storage proofs against a trusted state root, with no trust in the RPC. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
@@ -64,12 +64,12 @@
     "provenance": true
   },
   "dependencies": {
-    "@1888-labs/merkle-core": "workspace:^",
-    "@1888-labs/merkle-hash": "workspace:^",
-    "@1888-labs/merkle-variants": "workspace:^",
+    "@merkleforge/core": "workspace:^",
+    "@merkleforge/hash": "workspace:^",
+    "@merkleforge/variants": "workspace:^",
     "@noble/hashes": "^2.4.0"
   },
   "devDependencies": {
-    "@1888-labs/merkle-hash-wasm": "workspace:^"
+    "@merkleforge/hash-wasm": "workspace:^"
   }
 }

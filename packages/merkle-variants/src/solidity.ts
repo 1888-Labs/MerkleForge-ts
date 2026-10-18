@@ -1,4 +1,4 @@
-import { type MerkleProof, toHex } from '@1888-labs/merkle-core'
+import { type MerkleProof, toHex } from '@merkleforge/core'
 import type { BinaryMultiProof } from './multiproof.js'
 import { SPARSE_TREE_DEPTH, type SparseMerkleProof } from './sparse.js'
 

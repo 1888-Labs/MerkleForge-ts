@@ -1,5 +1,5 @@
-import { utf8 } from '@1888-labs/merkle-core'
-import { Keccak256, Sha256 } from '@1888-labs/merkle-hash'
+import { utf8 } from '@merkleforge/core'
+import { Keccak256, Sha256 } from '@merkleforge/hash'
 import { describe, expect, it } from 'vitest'
 import {
   BinaryMerkleTree,

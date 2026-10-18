@@ -7,7 +7,7 @@ to the whole repository unless a deeper `AGENTS.md` overrides it.
 
 TypeScript port of the [MerkleForge](https://github.com/1888-Labs/MerkleForge)
 Rust framework for authenticated data structures, published to npm under the
-`@1888-labs` scope. The Rust crates are the reference implementation: roots,
+`@merkleforge` scope (maintained by 1888 Labs). The Rust crates are the reference implementation: roots,
 proofs, node encodings, and error behavior must match them.
 
 ## Repository map

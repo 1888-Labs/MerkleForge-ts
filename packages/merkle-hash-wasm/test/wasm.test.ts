@@ -1,5 +1,5 @@
-import { toHex, utf8 } from '@1888-labs/merkle-core'
-import { Keccak256, Sha256 } from '@1888-labs/merkle-hash'
+import { toHex, utf8 } from '@merkleforge/core'
+import { Keccak256, Sha256 } from '@merkleforge/hash'
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import { createKeccak256Wasm, createSha256Wasm } from '../src/index.js'
