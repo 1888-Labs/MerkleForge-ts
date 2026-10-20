@@ -132,6 +132,12 @@ Errors are `MerkleError` from `@merkleforge/core` (`EmptyTree`,
 `IndexOutOfBounds`, `InvalidProofStructure`, `DeserializationError`), or
 `TypeError`/`RangeError` for values that do not fit the leaf encoding.
 
+## Performance
+
+Same output, less work: at 131,072 `[address, uint256]` leaves it builds the
+tree in 3.1 s against OpenZeppelin's 15.2 s, and generates and verifies proofs
+about 2x faster. See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
+
 ## How it is tested
 
 Every test compares against the real `@openzeppelin/merkle-tree` 1.0.8: random
