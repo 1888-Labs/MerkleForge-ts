@@ -59,6 +59,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
+  sync-develop:
+    name: Fast-forward develop
+    needs: release
+    if: always() && github.repository == '1888-Labs/MerkleForge-ts' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # Keep develop level with main after each release.
+      - run: |
+          git fetch origin develop
+          if git merge-base --is-ancestor origin/develop HEAD; then
+            git push origin HEAD:develop
+          else
+            echo "::notice::develop has commits that main does not; merge main into develop by hand."
+          fi
+
   staging:
     name: Publish next snapshot
     if: github.repository == '1888-Labs/MerkleForge-ts' && github.ref == 'refs/heads/develop'

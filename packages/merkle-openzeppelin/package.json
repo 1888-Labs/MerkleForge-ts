@@ -1,0 +1,74 @@
+{
+  "name": "@merkleforge/openzeppelin",
+  "version": "0.2.0",
+  "description": "Drop-in replacement for @openzeppelin/merkle-tree: StandardMerkleTree and SimpleMerkleTree with identical roots, proofs, multiproofs, and dump JSON, verified by OpenZeppelin MerkleProof on-chain. No ethers or MetaMask dependencies. Part of MerkleForge.",
+  "license": "MIT OR Apache-2.0",
+  "author": "Blessing Samuel <dicethedev>",
+  "homepage": "https://1888-labs.github.io/MerkleForge/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1888-Labs/MerkleForge-ts.git",
+    "directory": "packages/merkle-openzeppelin"
+  },
+  "bugs": "https://github.com/1888-Labs/MerkleForge-ts/issues",
+  "keywords": [
+    "merkleforge",
+    "merkle",
+    "merkle-tree",
+    "merkletree",
+    "merkle-proof",
+    "merkle-root",
+    "typescript",
+    "cryptography",
+    "blockchain",
+    "web3",
+    "openzeppelin",
+    "openzeppelin-merkle-tree",
+    "standard-merkle-tree",
+    "StandardMerkleTree",
+    "simple-merkle-tree",
+    "merkleproof",
+    "multiproof",
+    "airdrop",
+    "allowlist",
+    "whitelist",
+    "claim",
+    "token-distribution",
+    "ethereum",
+    "evm",
+    "solidity",
+    "abi-encode",
+    "keccak256"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@merkleforge/core": "workspace:^",
+    "@noble/hashes": "^2.4.0"
+  },
+  "devDependencies": {
+    "@metamask/abi-utils": "2.0.4",
+    "@openzeppelin/merkle-tree": "1.0.8"
+  }
+}

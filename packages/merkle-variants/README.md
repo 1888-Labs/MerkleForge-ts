@@ -118,6 +118,7 @@ one version.
 | [`@merkleforge/hash-wasm`](https://www.npmjs.com/package/@merkleforge/hash-wasm) | WebAssembly Keccak-256 and SHA-256, same digests, faster |
 | **[`@merkleforge/variants`](https://www.npmjs.com/package/@merkleforge/variants)** | Binary, Sparse, and Patricia trees, multiproofs, codecs |
 | [`@merkleforge/ethereum`](https://www.npmjs.com/package/@merkleforge/ethereum) | Verify `eth_getProof` account and storage proofs |
+| [`@merkleforge/openzeppelin`](https://www.npmjs.com/package/@merkleforge/openzeppelin) | OpenZeppelin-compatible `StandardMerkleTree` and `SimpleMerkleTree` |
 
 Staging builds from `develop` are published under the `next` tag
 (`npm i @merkleforge/variants@next`). MerkleForge has not been independently
