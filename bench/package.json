@@ -1,0 +1,18 @@
+{
+  "name": "merkleforge-bench",
+  "private": true,
+  "type": "module",
+  "description": "Compares MerkleForge with other JavaScript Merkle tree libraries. Separate from the pnpm workspace so CI never installs the comparison libraries.",
+  "scripts": {
+    "bench": "node --expose-gc run.mjs"
+  },
+  "dependencies": {
+    "@aztec/foundation": "4.4.0",
+    "@aztec/kv-store": "4.4.0",
+    "@aztec/merkle-tree": "4.4.0",
+    "@aztec/world-state": "5.2.1",
+    "@noble/hashes": "2.4.0",
+    "@openzeppelin/merkle-tree": "1.0.8",
+    "merkletreejs": "0.6.0"
+  }
+}

@@ -161,6 +161,16 @@ MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
 - **Ethereum state proofs**: `verifyEthGetProof(stateRoot, response)` checks
   an `eth_getProof` response, tested against real mainnet proofs.
 
+## Benchmarks
+
+At 131,072 leaves, `BinaryMerkleTree` with `@merkleforge/hash-wasm` builds a
+Keccak-256 tree in 485 ms (merkletreejs 1,544 ms, OpenZeppelin 14,518 ms) and
+generates a proof in 8 µs. `@merkleforge/openzeppelin` builds OpenZeppelin
+airdrop trees 4.9x faster than `@openzeppelin/merkle-tree` with identical
+output. Everything installs with one or two dependencies. Full results,
+including `@aztec/merkle-tree` and `@aztec/world-state`, and what each number
+does and does not compare: [BENCHMARKS.md](BENCHMARKS.md).
+
 ## How it maps to Rust
 
 | Rust | TypeScript |
