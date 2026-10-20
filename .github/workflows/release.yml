@@ -70,9 +70,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      # Merging develop into main leaves a merge commit (and release commits) only
-      # on main, so GitHub shows develop as behind. Fast-forward develop whenever
-      # it has nothing main lacks. Pushes made with GITHUB_TOKEN start no workflows.
+      # Keep develop level with main after each release.
       - run: |
           git fetch origin develop
           if git merge-base --is-ancestor origin/develop HEAD; then
