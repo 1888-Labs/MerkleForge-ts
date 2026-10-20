@@ -21,6 +21,15 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@merkleforge/core"><img alt="@merkleforge/core downloads" src="https://img.shields.io/npm/dt/@merkleforge/core?style=flat-square&label=core&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/hash"><img alt="@merkleforge/hash downloads" src="https://img.shields.io/npm/dt/@merkleforge/hash?style=flat-square&label=hash&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/hash-wasm"><img alt="@merkleforge/hash-wasm downloads" src="https://img.shields.io/npm/dt/@merkleforge/hash-wasm?style=flat-square&label=hash-wasm&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/variants"><img alt="@merkleforge/variants downloads" src="https://img.shields.io/npm/dt/@merkleforge/variants?style=flat-square&label=variants&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/ethereum"><img alt="@merkleforge/ethereum downloads" src="https://img.shields.io/npm/dt/@merkleforge/ethereum?style=flat-square&label=ethereum&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/openzeppelin"><img alt="@merkleforge/openzeppelin downloads" src="https://img.shields.io/npm/dt/@merkleforge/openzeppelin?style=flat-square&label=openzeppelin&color=000000"></a>
+</p>
+
+<p align="center">
   <a href="https://1888-labs.github.io/MerkleForge/">Website</a> ·
   <a href="https://1888-labs.github.io/MerkleForge/docs/getting-started">Docs</a> ·
   <a href="https://github.com/1888-Labs/MerkleForge">Rust crates</a> ·
