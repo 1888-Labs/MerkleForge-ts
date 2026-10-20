@@ -1,0 +1,282 @@
+{
+  "environment": {
+    "node": "v24.15.0",
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+    "os": "linux 7.0.0-38-generic",
+    "date": "2026-10-18T20:57:22.008Z",
+    "ops": 2000,
+    "buildRuns": 3
+  },
+  "results": [
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 27.873157999999876,
+      "proofUs": 3.255278999999973,
+      "verifyUs": 100.10356350000006
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree + hash-wasm",
+      "hash": "Keccak-256 (WASM)",
+      "n": 1024,
+      "buildMs": 6.9260320000000775,
+      "proofUs": 2.1676484999999275,
+      "verifyUs": 27.290444500000035
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/openzeppelin SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 15.780025000000023,
+      "proofUs": 94.65375800000004,
+      "verifyUs": 113.63899199999992
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@openzeppelin/merkle-tree SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 104.20915100000002,
+      "proofUs": 263.25276799999983,
+      "verifyUs": 234.82530800000018
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "merkletreejs MerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 12.778650000000198,
+      "proofUs": 2.124512000000095,
+      "verifyUs": 98.48927649999996
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 35.25407300000006,
+      "proofUs": 27.409631999999874,
+      "verifyUs": 128.6027525000004
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Poseidon2 (bb.js WASM)",
+      "n": 1024,
+      "buildMs": 66.32887000000028,
+      "proofUs": 32.910260500000284,
+      "verifyUs": 327.683278
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/world-state note hash tree (native)",
+      "hash": "Poseidon2 (native C++), depth 42",
+      "n": 1024,
+      "buildMs": 21.670146000000386,
+      "proofUs": 66.88978799999995,
+      "verifyUs": 1257.399746
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 275.67615300000034,
+      "proofUs": 9.303360500000053,
+      "verifyUs": 127.74698249999985
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree + hash-wasm",
+      "hash": "Keccak-256 (WASM)",
+      "n": 16384,
+      "buildMs": 65.28643999999986,
+      "proofUs": 5.45502149999993,
+      "verifyUs": 31.72377250000045
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/openzeppelin SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 173.05561000000125,
+      "proofUs": 123.62938349999968,
+      "verifyUs": 173.81453200000033
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@openzeppelin/merkle-tree SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 1631.4861259999998,
+      "proofUs": 327.7282485000014,
+      "verifyUs": 305.6555189999999
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "merkletreejs MerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 144.29783899999893,
+      "proofUs": 3.0980245000009745,
+      "verifyUs": 119.83941699999923
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 429.15124800000194,
+      "proofUs": 44.37601300000097,
+      "verifyUs": 165.11125949999953
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Poseidon2 (bb.js WASM)",
+      "n": 16384,
+      "buildMs": 701.3890749999991,
+      "proofUs": 50.85496499999863,
+      "verifyUs": 403.21438850000044
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/world-state note hash tree (native)",
+      "hash": "Poseidon2 (native C++), depth 42",
+      "n": 16384,
+      "buildMs": 312.98148800000126,
+      "proofUs": 74.15438949999952,
+      "verifyUs": 1251.3062609999997
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 2118.686834,
+      "proofUs": 10.758590500001446,
+      "verifyUs": 148.14759849999973
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/variants BinaryMerkleTree + hash-wasm",
+      "hash": "Keccak-256 (WASM)",
+      "n": 131072,
+      "buildMs": 484.58962600000086,
+      "proofUs": 8.157398000003013,
+      "verifyUs": 40.77291150000019
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@merkleforge/openzeppelin SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 1560.926370000001,
+      "proofUs": 175.9410339999995,
+      "verifyUs": 204.2818060000027
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@openzeppelin/merkle-tree SimpleMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 14518.075001999998,
+      "proofUs": 743.4494584999992,
+      "verifyUs": 473.59656350000296
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "merkletreejs MerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 1544.0834709999908,
+      "proofUs": 36.86453550000442,
+      "verifyUs": 538.0457375000115
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 2669.2415849999816,
+      "proofUs": 51.945236500003375,
+      "verifyUs": 167.45431149999786
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/merkle-tree StandardTree",
+      "hash": "Poseidon2 (bb.js WASM)",
+      "n": 131072,
+      "buildMs": 4672.425896999979,
+      "proofUs": 50.737225499993656,
+      "verifyUs": 392.06992749999336
+    },
+    {
+      "scenario": "bytes32 leaves",
+      "library": "@aztec/world-state note hash tree (native)",
+      "hash": "Poseidon2 (native C++), depth 42",
+      "n": 131072,
+      "buildMs": 2006.5351390000142,
+      "proofUs": 52.93461749999551,
+      "verifyUs": 987.9047949999949
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@merkleforge/openzeppelin StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 28.384760000015376,
+      "proofUs": 85.80064099999436,
+      "verifyUs": 102.81892350000271
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@openzeppelin/merkle-tree StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 1024,
+      "buildMs": 124.59384300000966,
+      "proofUs": 230.45187600000645,
+      "verifyUs": 220.04511849999835
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@merkleforge/openzeppelin StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 386.16085000001476,
+      "proofUs": 115.22025250000297,
+      "verifyUs": 131.29990500000713
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@openzeppelin/merkle-tree StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 16384,
+      "buildMs": 1873.8321649999998,
+      "proofUs": 289.249762499996,
+      "verifyUs": 271.19255750000593
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@merkleforge/openzeppelin StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 3070.056287000014,
+      "proofUs": 140.8639819999953,
+      "verifyUs": 170.94858500000555
+    },
+    {
+      "scenario": "OpenZeppelin [address, uint256] leaves",
+      "library": "@openzeppelin/merkle-tree StandardMerkleTree",
+      "hash": "Keccak-256 (noble)",
+      "n": 131072,
+      "buildMs": 15196.80535899999,
+      "proofUs": 332.67340949999925,
+      "verifyUs": 319.5757264999993
+    }
+  ]
+}

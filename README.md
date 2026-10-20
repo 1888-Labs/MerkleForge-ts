@@ -48,6 +48,8 @@ with an idiomatic TypeScript API:
 - **Pluggable hashes.** `Sha256`, `Keccak256`, `Blake3`, WebAssembly Keccak-256 and SHA-256,
   or your own with `defineHashFunction`.
 - **Stateless proofs.** Verify with only a trusted root, the leaf, and an `O(log n)` proof.
+- **OpenZeppelin-compatible.** A drop-in `StandardMerkleTree` for airdrops and allowlists
+  verified by OpenZeppelin's `MerkleProof`.
 - **On-chain and Ethereum.** Solidity verifiers for every proof type, and `eth_getProof`
   verification tested against real mainnet proofs.
 - **Small.** ESM only, Node.js 22+, browsers, Deno, and Bun. The only runtime dependency
@@ -62,6 +64,7 @@ with an idiomatic TypeScript API:
 | [`@merkleforge/variants`](packages/merkle-variants) | `BinaryMerkleTree` (with multiproofs), `SparseMerkleTree`, `MerklePatriciaTrie`, proof codecs | `merkle-variants` |
 | [`@merkleforge/hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256`, identical output, about 6x faster Keccak | none |
 | [`@merkleforge/ethereum`](packages/merkle-ethereum) | Verify `eth_getProof` account and storage proofs against a state root | none |
+| [`@merkleforge/openzeppelin`](packages/merkle-openzeppelin) | Drop-in `StandardMerkleTree` and `SimpleMerkleTree` from `@openzeppelin/merkle-tree`: same roots, proofs, and dumps | none |
 
 | Variant | Use it for | Proofs |
 |---------|------------|--------|
@@ -138,6 +141,10 @@ MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
 
 ## More features
 
+- **OpenZeppelin compatibility**: `@merkleforge/openzeppelin` is a drop-in
+  replacement for `@openzeppelin/merkle-tree`. Change the import and every
+  root, proof, multiproof, and `dump()` stays identical, so existing airdrop
+  and allowlist contracts using OpenZeppelin's `MerkleProof` keep working.
 - **Multiproofs**: `tree.generateMultiProof([1, 4, 9])` proves several leaves
   with shared siblings; verify with `BinaryMerkleTree.verifyMultiProof`.
 - **Rust-compatible proof formats**: `encodeMerkleProof` / `decodeMerkleProof`
@@ -153,6 +160,16 @@ MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
   [contracts/README.md](contracts/README.md).
 - **Ethereum state proofs**: `verifyEthGetProof(stateRoot, response)` checks
   an `eth_getProof` response, tested against real mainnet proofs.
+
+## Benchmarks
+
+At 131,072 leaves, `BinaryMerkleTree` with `@merkleforge/hash-wasm` builds a
+Keccak-256 tree in 485 ms (merkletreejs 1,544 ms, OpenZeppelin 14,518 ms) and
+generates a proof in 8 µs. `@merkleforge/openzeppelin` builds OpenZeppelin
+airdrop trees 4.9x faster than `@openzeppelin/merkle-tree` with identical
+output. Everything installs with one or two dependencies. Full results,
+including `@aztec/merkle-tree` and `@aztec/world-state`, and what each number
+does and does not compare: [BENCHMARKS.md](BENCHMARKS.md).
 
 ## How it maps to Rust
 
