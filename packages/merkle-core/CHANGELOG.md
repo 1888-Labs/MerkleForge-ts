@@ -1,5 +1,11 @@
 # @1888-labs/merkle-core
 
+## 0.2.2
+
+### Patch Changes
+
+- c008a13: Releases are now published through npm trusted publishing (OIDC) with provenance, and each version is approved by a maintainer with 2FA before it goes live.
+
 ## 0.2.1
 
 No changes in this release.
