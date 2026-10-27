@@ -33,7 +33,12 @@ try {
 
 const live = (name, version) => {
   try {
-    return run('npm', ['view', `${name}@${version}`, 'version']).trim() === version
+    // A missing version is the normal case; keep npm's 404 out of the log.
+    return (
+      run('npm', ['view', `${name}@${version}`, 'version'], {
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim() === version
+    )
   } catch {
     return false
   }
