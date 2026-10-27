@@ -99,8 +99,7 @@ Merging it stages every package on npm through trusted publishing (OIDC, no
 token) with provenance. The packages are versioned together.
 
 Nothing goes live until a maintainer approves each staged package with 2FA,
-on the [Staged Packages](https://www.npmjs.com/settings/~/packages) tab of
-npmjs.com or with:
+on the Staged Packages tab of npmjs.com or with:
 
 ```bash
 npm stage list
