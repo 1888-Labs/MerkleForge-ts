@@ -229,8 +229,9 @@ version.
 | `main` (stable) | `latest` | `0.2.0`, when the "Version packages" PR is merged | Release `v0.2.0` |
 
 Merging `develop` into `main` opens the "Version packages" PR, which bumps
-versions and writes the changelogs. Merging that PR publishes to npm and
-creates the GitHub release. See the [releases page](https://github.com/1888-Labs/MerkleForge-ts/releases).
+versions and writes the changelogs. Merging that PR stages the packages on npm
+and creates the GitHub release; the version goes live once a maintainer approves
+the staged packages with 2FA. See the [releases page](https://github.com/1888-Labs/MerkleForge-ts/releases).
 
 ## Contributing
 

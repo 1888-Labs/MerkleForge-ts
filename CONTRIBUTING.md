@@ -95,5 +95,17 @@ would be, so the Rust crates can adopt them without breaking compatibility.
 
 Releases run from `main` with [Changesets](https://github.com/changesets/changesets).
 Pending changesets make the Release workflow open a "Version packages" PR.
-Merging it publishes all three packages to npm with provenance. The packages
-are versioned together.
+Merging it stages every package on npm through trusted publishing (OIDC, no
+token) with provenance. The packages are versioned together.
+
+Nothing goes live until a maintainer approves each staged package with 2FA,
+on the [Staged Packages](https://www.npmjs.com/settings/~/packages) tab of
+npmjs.com or with:
+
+```bash
+npm stage list
+npm stage approve <stage-id>
+```
+
+`next` snapshots from `develop` are staged the same way. Approve `@merkleforge/core`
+first, since the other packages depend on it.
