@@ -4,6 +4,8 @@ name: Release
 # merging it publishes to npm under `latest` and creates the vX.Y.Z release.
 # develop: staging. Pending changesets publish X.Y.Z-next.YYYY-MM-DD-HHMM (UTC) snapshots
 # under the `next` dist-tag and create a GitHub prerelease.
+# Both publish through npm trusted publishing (OIDC, `id-token: write`); there is no npm token.
+# Each package's trusted publisher is 1888-Labs/MerkleForge-ts, workflow release.yml.
 on:
   push:
     branches: [main, develop]
@@ -50,7 +52,6 @@ jobs:
           create-github-releases: false
           push-git-tags: false
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
       # The publish script only runs when no changesets are pending. The script
       # skips versions that already have a release.
@@ -110,7 +111,6 @@ jobs:
           pnpm build
           pnpm changeset publish --tag next --no-git-tag
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
       - if: steps.pending.outputs.changesets == 'true'
         run: node scripts/github-release.mjs --prerelease

@@ -43,7 +43,7 @@ proofs, node encodings, and error behavior must match them.
 - `merkle-core` must stay dependency-free. New runtime dependencies elsewhere
   need a clear reason; prefer audited, zero-dependency libraries.
 - Never add secrets, tokens, or credentials anywhere, including history.
-  The npm token lives only in the `NPM_TOKEN` repository secret.
+  Publishing uses npm trusted publishing (OIDC from `release.yml`); there is no npm token.
 
 ## Cryptographic invariants
 
