@@ -39,7 +39,7 @@ jobs:
           # No dependency cache in release builds (cache poisoning).
           package-manager-cache: false
       # `npm stage publish` needs npm 11.15+; Node 24 bundles an older npm.
-      - run: npm install -g npm@11.21.1
+      - run: npm install -g npm@12.2.1
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
@@ -108,7 +108,7 @@ jobs:
           package-manager-cache: false
       # `npm stage publish` needs npm 11.15+; Node 24 bundles an older npm.
       - if: steps.pending.outputs.changesets == 'true'
-        run: npm install -g npm@11.21.1
+        run: npm install -g npm@12.2.1
       - if: steps.pending.outputs.changesets == 'true'
         run: pnpm install --frozen-lockfile
       - if: steps.pending.outputs.changesets == 'true'
