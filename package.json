@@ -20,13 +20,13 @@
     "check:packages": "pnpm build && pnpm -r --filter './packages/*' exec publint --strict && pnpm -r --filter './packages/*' exec attw --pack . --profile esm-only",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:packages",
     "changeset": "changeset",
-    "release": "pnpm build && changeset publish",
+    "release": "pnpm build && node scripts/stage-publish.mjs",
     "fixtures:solidity": "pnpm build && node scripts/solidity-fixtures.mjs",
     "test:solidity": "cd contracts && forge test"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
-    "@biomejs/biome": "2.5.15",
+    "@biomejs/biome": "2.6.2",
     "@changesets/cli": "3.0.3",
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "5.0.5",

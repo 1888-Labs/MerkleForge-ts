@@ -68,7 +68,7 @@
     "@noble/hashes": "^2.4.0"
   },
   "devDependencies": {
-    "@metamask/abi-utils": "2.0.4",
+    "@metamask/abi-utils": "3.0.0",
     "@openzeppelin/merkle-tree": "1.0.8"
   }
 }
