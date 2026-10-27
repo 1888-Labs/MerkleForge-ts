@@ -1,9 +1,13 @@
 name: Release
 
 # main: stable releases. Pending changesets open a "Version packages" PR;
-# merging it publishes to npm under `latest` and creates the vX.Y.Z release.
-# develop: staging. Pending changesets publish X.Y.Z-next.YYYY-MM-DD-HHMM (UTC) snapshots
+# merging it stages the packages for npm under `latest` and creates the vX.Y.Z release.
+# develop: staging. Pending changesets stage X.Y.Z-next.YYYY-MM-DD-HHMM (UTC) snapshots
 # under the `next` dist-tag and create a GitHub prerelease.
+# Both stage through npm trusted publishing (OIDC, `id-token: write`); there is no npm token.
+# Each package's trusted publisher is 1888-Labs/MerkleForge-ts, workflow release.yml, stage only:
+# a staged version goes live once a maintainer approves it with 2FA (`npm stage approve` or
+# the Staged Packages tab on npmjs.com).
 on:
   push:
     branches: [main, develop]
@@ -31,8 +35,11 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: pnpm
           registry-url: https://registry.npmjs.org
+          # No dependency cache in release builds (cache poisoning).
+          package-manager-cache: false
+      # `npm stage publish` needs npm 11.15+; Node 24 bundles an older npm.
+      - run: npm install -g npm@12.2.1
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
@@ -50,8 +57,7 @@ jobs:
           create-github-releases: false
           push-git-tags: false
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}
       # The publish script only runs when no changesets are pending. The script
       # skips versions that already have a release.
       - if: steps.changesets.outputs.has-changesets == 'false'
@@ -97,8 +103,12 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: pnpm
           registry-url: https://registry.npmjs.org
+          # No dependency cache in release builds (cache poisoning).
+          package-manager-cache: false
+      # `npm stage publish` needs npm 11.15+; Node 24 bundles an older npm.
+      - if: steps.pending.outputs.changesets == 'true'
+        run: npm install -g npm@12.2.1
       - if: steps.pending.outputs.changesets == 'true'
         run: pnpm install --frozen-lockfile
       - if: steps.pending.outputs.changesets == 'true'
@@ -108,10 +118,9 @@ jobs:
           # One segment, so a time like 0905 is not a numeric identifier with a leading zero.
           pnpm changeset version --snapshot "next.$(date -u +%Y-%m-%d-%H%M)"
           pnpm build
-          pnpm changeset publish --tag next --no-git-tag
+          node scripts/stage-publish.mjs --tag next
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}
       - if: steps.pending.outputs.changesets == 'true'
         run: node scripts/github-release.mjs --prerelease
         env:
