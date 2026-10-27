@@ -1,6 +1,6 @@
 {
   "name": "@merkleforge/ethereum",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Verify Ethereum eth_getProof (EIP-1186) account and storage proofs against a trusted state root, with no trust in the RPC. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",

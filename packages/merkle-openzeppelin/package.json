@@ -1,6 +1,6 @@
 {
   "name": "@merkleforge/openzeppelin",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Drop-in replacement for @openzeppelin/merkle-tree: StandardMerkleTree and SimpleMerkleTree with identical roots, proofs, multiproofs, and dump JSON, verified by OpenZeppelin MerkleProof on-chain. No ethers or MetaMask dependencies. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",

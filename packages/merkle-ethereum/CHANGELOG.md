@@ -1,5 +1,14 @@
 # @1888-labs/merkle-ethereum
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [c008a13]
+  - @merkleforge/core@0.2.2
+  - @merkleforge/hash@0.2.2
+  - @merkleforge/variants@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

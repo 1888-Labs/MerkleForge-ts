@@ -1,6 +1,6 @@
 {
   "name": "@merkleforge/variants",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Merkle trees for TypeScript: binary Merkle tree with multiproofs, sparse Merkle tree with non-membership proofs, and Ethereum Merkle Patricia trie. Matches the Rust crates byte for byte. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
