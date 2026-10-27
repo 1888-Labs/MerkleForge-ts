@@ -46,7 +46,9 @@ for (const pkg of packages) {
     continue
   }
   // pnpm pack turns `workspace:^` ranges into real versions; npm would not.
-  const packed = JSON.parse(run('pnpm', ['pack', '--json', '--pack-destination', out], { cwd: pkg.dir }))
+  const packed = JSON.parse(
+    run('pnpm', ['pack', '--json', '--pack-destination', out], { cwd: pkg.dir }),
+  )
   const tarball = Array.isArray(packed) ? packed[0].filename : packed.filename
   const argv = ['stage', 'publish', tarball, '--tag', tag, '--access', 'public']
   if (dryRun) argv.push('--dry-run')
