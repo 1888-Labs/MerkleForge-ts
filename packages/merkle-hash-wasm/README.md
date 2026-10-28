@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@merkleforge/hash-wasm"><img alt="npm" src="https://img.shields.io/npm/v/@merkleforge/hash-wasm?style=flat-square&label=npm&color=000000"></a>
-  <a href="https://www.npmjs.com/package/@merkleforge/hash-wasm"><img alt="downloads" src="https://img.shields.io/npm/dm/@merkleforge/hash-wasm?style=flat-square&label=downloads&color=000000"></a>
+  <a href="https://www.npmjs.com/package/@merkleforge/hash-wasm"><img alt="downloads" src="https://img.shields.io/npm/dw/@merkleforge/hash-wasm?style=flat-square&label=downloads&color=000000"></a>
   <a href="https://github.com/1888-Labs/MerkleForge-ts/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/1888-Labs/MerkleForge-ts/ci.yml?branch=main&style=flat-square&label=CI"></a>
   <a href="#license"><img alt="license" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-000000?style=flat-square"></a>
 </p>
