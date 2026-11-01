@@ -7,3 +7,4 @@ scripts/rust-vectors/target/
 scripts/rust-vectors/Cargo.lock
 contracts/out/
 contracts/cache/
+scripts/wasm-hash/target/
