@@ -8,6 +8,9 @@
   "references": [
     {
       "path": "../merkle-core"
+    },
+    {
+      "path": "../merkle-hash"
     }
   ]
 }

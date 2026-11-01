@@ -7,9 +7,8 @@ import {
   MerkleError,
   toHex,
 } from '@merkleforge/core'
-import { Keccak256 } from '@merkleforge/hash'
+import { Keccak256, keccak256 as rawKeccak256 } from '@merkleforge/hash'
 import { decodeRlp, MerklePatriciaTrie, type RlpValue } from '@merkleforge/variants'
-import { keccak_256 } from '@noble/hashes/sha3.js'
 
 /** Bytes, or a hex string as returned by JSON-RPC (`0x`-prefixed). */
 export type BytesLike = Bytes | string
@@ -64,7 +63,7 @@ function invalid(): MerkleError {
 
 /** Raw `keccak256(data)`, without MerkleForge's leaf prefix. */
 export function keccak256(data: BytesLike): Bytes {
-  return keccak_256(bytes(data))
+  return rawKeccak256(bytes(data))
 }
 
 /**

@@ -65,10 +65,11 @@
   },
   "dependencies": {
     "@merkleforge/core": "workspace:^",
-    "@noble/hashes": "^2.4.0"
+    "@merkleforge/hash": "workspace:^"
   },
   "devDependencies": {
     "@metamask/abi-utils": "3.0.0",
+    "@noble/hashes": "^2.4.0",
     "@openzeppelin/merkle-tree": "1.0.8"
   }
 }
