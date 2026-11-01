@@ -110,7 +110,7 @@ const KeccakWasm = await createKeccak256Wasm()
 const binaryCases = [
   {
     name: '@merkleforge/variants BinaryMerkleTree',
-    hash: 'Keccak-256 (noble)',
+    hash: 'Keccak-256 (MerkleForge JS)',
     build: ({ leaves }) => {
       const tree = BinaryMerkleTree.fromLeaves(Keccak256, leaves)
       const root = tree.root()
@@ -121,8 +121,8 @@ const binaryCases = [
     },
   },
   {
-    name: '@merkleforge/variants BinaryMerkleTree + hash-wasm',
-    hash: 'Keccak-256 (WASM)',
+    name: '@merkleforge/variants BinaryMerkleTree + @merkleforge/hash-wasm',
+    hash: 'Keccak-256 (MerkleForge WASM SIMD)',
     build: ({ leaves }) => {
       const tree = BinaryMerkleTree.fromLeaves(KeccakWasm, leaves)
       const root = tree.root()
@@ -134,7 +134,7 @@ const binaryCases = [
   },
   {
     name: '@merkleforge/openzeppelin SimpleMerkleTree',
-    hash: 'Keccak-256 (noble)',
+    hash: 'Keccak-256 (MerkleForge JS)',
     build: ({ leaves }) => {
       const tree = SimpleMerkleTree.of(leaves)
       const root = tree.root
@@ -178,7 +178,7 @@ const binaryCases = [
 const standardCases = [
   {
     name: '@merkleforge/openzeppelin StandardMerkleTree',
-    hash: 'Keccak-256 (noble)',
+    hash: 'Keccak-256 (MerkleForge JS)',
     build: ({ accounts }) => {
       const tree = StandardMerkleTree.of(accounts, ['address', 'uint256'])
       const root = tree.root

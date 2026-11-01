@@ -71,7 +71,7 @@ with an idiomatic TypeScript API:
 | [`@merkleforge/core`](packages/merkle-core) | `HashFunction` and `MerkleTree` interfaces, proofs, `MerkleError`, byte helpers | `merkle-core` |
 | [`@merkleforge/hash`](packages/merkle-hash) | `Sha256`, `Keccak256`, `Blake3` adapters | `merkleforge-hash` |
 | [`@merkleforge/variants`](packages/merkle-variants) | `BinaryMerkleTree` (with multiproofs), `SparseMerkleTree`, `MerklePatriciaTrie`, proof codecs | `merkle-variants` |
-| [`@merkleforge/hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256`, identical output, about 6x faster Keccak | none |
+| [`@merkleforge/hash-wasm`](packages/merkle-hash-wasm) | WebAssembly `Keccak256` and `Sha256` with batch layer hashing and SIMD, identical output | none |
 | [`@merkleforge/ethereum`](packages/merkle-ethereum) | Verify `eth_getProof` account and storage proofs against a state root | none |
 | [`@merkleforge/openzeppelin`](packages/merkle-openzeppelin) | Drop-in `StandardMerkleTree` and `SimpleMerkleTree` from `@openzeppelin/merkle-tree`: same roots, proofs, and dumps | none |
 
@@ -173,12 +173,13 @@ MerklePatriciaTrie.verifyProof(Keccak256, trie.root()!, witness) // true
 ## Benchmarks
 
 At 131,072 leaves, `BinaryMerkleTree` with `@merkleforge/hash-wasm` builds a
-Keccak-256 tree in 485 ms (merkletreejs 1,544 ms, OpenZeppelin 14,518 ms) and
-generates a proof in 8 µs. `@merkleforge/openzeppelin` builds OpenZeppelin
-airdrop trees 4.9x faster than `@openzeppelin/merkle-tree` with identical
-output. Everything installs with one or two dependencies. Full results,
-including `@aztec/merkle-tree` and `@aztec/world-state`, and what each number
-does and does not compare: [BENCHMARKS.md](BENCHMARKS.md).
+Keccak-256 tree in 98 ms (merkletreejs 935 ms, OpenZeppelin 10,493 ms), 5x
+faster than 0.2.2, and generates a proof in 2–3 µs. The pure-JS adapter
+builds the same tree in 637 ms. `@merkleforge/openzeppelin` builds
+OpenZeppelin airdrop trees 8–13x faster than `@openzeppelin/merkle-tree` with
+identical output. Everything installs with one to three dependencies. Full
+results, including `@aztec/merkle-tree` and `@aztec/world-state`, and what each
+number does and does not compare: [BENCHMARKS.md](BENCHMARKS.md).
 
 ## How it maps to Rust
 

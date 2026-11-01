@@ -35,7 +35,8 @@ multiproof, and `dump()` is identical, so:
 - switching is a one-line import change.
 
 It ships its own `abi.encode`, so it depends only on `@merkleforge/core` and
-[`@noble/hashes`](https://github.com/paulmillr/noble-hashes), not on
+`@merkleforge/hash` (whose Keccak-256 is cross-checked against
+[`@noble/hashes`](https://github.com/paulmillr/noble-hashes)), not on
 `@metamask/abi-utils` or `ethereum-cryptography`.
 
 ## Install
