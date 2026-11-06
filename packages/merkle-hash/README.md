@@ -25,8 +25,11 @@
   <a href="https://github.com/1888-Labs/MerkleForge">Rust crates</a>
 </p>
 
-`@merkleforge/hash` provides ready-made `HashFunction` adapters built on
-[`@noble/hashes`](https://github.com/paulmillr/noble-hashes). Every tree in
+`@merkleforge/hash` provides ready-made `HashFunction` adapters in pure
+JavaScript. SHA-256 and BLAKE3 come from
+[`@noble/hashes`](https://github.com/paulmillr/noble-hashes); Keccak-256 uses
+MerkleForge's own unrolled sponge, about 2x faster than noble's on the short
+inputs trees hash ([measured](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md#keccak-256-per-call)) and tested against it byte for byte. Every tree in
 `@merkleforge/variants` takes one, so switching algorithms is a one-word
 change, and each produces the same digests as the Rust `merkleforge-hash` crate.
 
@@ -62,7 +65,16 @@ The `0x00` / `0x01` prefixes keep a leaf from being passed off as an internal
 node (second-preimage protection). With `Keccak256`, `MerklePatriciaTrie`
 hashes nodes with plain Keccak-256, so its roots match Ethereum.
 
-For about 6x faster Keccak-256, use
+`Keccak256` also implements the optional batch methods `hashNodePairs` and
+`hashLeaves`, which trees use to hash a whole layer without allocating a
+digest per node.
+
+`keccak256(data, more?)` is plain Keccak-256 with no domain prefix (of
+`data || more` when `more` is given), the same as `keccak_256` from
+`@noble/hashes`.
+
+For WebAssembly hashing that builds trees 3–7x faster again (6.5x at 131,072
+leaves, see [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md)), use
 [`@merkleforge/hash-wasm`](https://www.npmjs.com/package/@merkleforge/hash-wasm),
 which returns the same digests.
 

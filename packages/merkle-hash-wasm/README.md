@@ -9,7 +9,7 @@
 
 <h1 align="center">@merkleforge/hash-wasm</h1>
 
-<p align="center">WebAssembly Keccak-256 and SHA-256 adapters for MerkleForge.<br>Same digests as <code>@merkleforge/hash</code>, about 6x faster Keccak.</p>
+<p align="center">WebAssembly Keccak-256 and SHA-256 adapters for MerkleForge.<br>Same digests as <code>@merkleforge/hash</code>, with whole-layer batch hashing and SIMD.</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@merkleforge/hash-wasm"><img alt="npm" src="https://img.shields.io/npm/v/@merkleforge/hash-wasm?style=flat-square&label=npm&color=000000"></a>
@@ -25,14 +25,27 @@
   <a href="https://github.com/1888-Labs/MerkleForge">Rust crates</a>
 </p>
 
-`@merkleforge/hash-wasm` wraps [`hash-wasm`](https://github.com/Daninet/hash-wasm).
-The adapters return exactly the same digests and `algorithmName` as
-`@merkleforge/hash`, so you can swap them in without changing any root,
-proof, or saved tree.
+`@merkleforge/hash-wasm` is a small WebAssembly module (about 9 KB, no
+imports, written in `no_std` Rust in
+[`scripts/wasm-hash`](https://github.com/1888-Labs/MerkleForge-ts/tree/main/scripts/wasm-hash))
+embedded in the package, so it loads the same way in Node, Deno, Bun, and
+browsers with no bundler configuration and no runtime dependencies beyond
+`@merkleforge/core`. The adapters return exactly the same digests and
+`algorithmName` as `@merkleforge/hash`, so you can swap them in without
+changing any root, proof, or saved tree.
 
-Keccak-256 is about 6x faster than the pure-JS adapter in Node. That matters
-most for `SparseMerkleTree`, where every new key costs about 256 hashes, and
-for verifying `eth_getProof` responses in bulk. SHA-256 is only slightly faster.
+It is fast for two reasons:
+
+- **Batching.** The adapters implement `hashNodePairs` and `hashLeaves`, so
+  `BinaryMerkleTree` hashes each whole layer in one call into WebAssembly
+  instead of one call per node.
+- **SIMD.** Where the engine supports WebAssembly SIMD (every current browser,
+  Node, Deno, and Bun), Keccak-256 runs two permutations at once. Older
+  engines get a scalar build automatically.
+
+Building a 131,072-leaf Keccak-256 tree takes about 80–110 ms in Node, versus
+about 640 ms with the pure-JS adapter and 485 ms with 0.2.2's WebAssembly adapter.
+See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
 
 > Formerly published as `@1888-labs/merkle-hash-wasm` (deprecated). From 0.2.0, install `@merkleforge/hash-wasm`; the API is unchanged.
 
@@ -69,7 +82,8 @@ const result = verifyEthGetProof(stateRoot, response, { hasher: await createKecc
 | `createKeccak256Wasm()` | `Promise<HashFunction>`, interchangeable with `Keccak256` (including Patricia node hashing) |
 | `createSha256Wasm()` | `Promise<HashFunction>`, interchangeable with `Sha256` |
 
-BLAKE3 is not offered because `hash-wasm` has no `derive_key` mode.
+Each call creates its own WebAssembly instance; the module is compiled once.
+Memory grows as needed for large inputs. BLAKE3 is not offered yet.
 
 ## Part of MerkleForge
 

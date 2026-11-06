@@ -1,5 +1,5 @@
-import { type Bytes, concatBytes, fromHex, MerkleError, toHex } from '@merkleforge/core'
-import { keccak_256 } from '@noble/hashes/sha3.js'
+import { type Bytes, fromHex, MerkleError, toHex } from '@merkleforge/core'
+import { keccak256 } from '@merkleforge/hash'
 import { abiEncode } from './abi.js'
 
 /** A `0x`-prefixed, lowercase hex string, as `@openzeppelin/merkle-tree` returns. */
@@ -43,7 +43,7 @@ export function standardLeafHash(types: readonly string[], value: readonly unkno
 }
 
 export function standardLeafBytes(types: readonly string[], value: readonly unknown[]): Bytes {
-  return keccak_256(keccak_256(abiEncode(types, value)))
+  return keccak256(keccak256(abiEncode(types, value)))
 }
 
 /** `keccak256(min(a, b) || max(a, b))`: OpenZeppelin's commutative node hash. */
@@ -52,7 +52,7 @@ export function standardNodeHash(a: BytesLike, b: BytesLike): HexString {
 }
 
 function sortedPairHash(a: Bytes, b: Bytes): Bytes {
-  return keccak_256(compareBytes(a, b) <= 0 ? concatBytes(a, b) : concatBytes(b, a))
+  return compareBytes(a, b) <= 0 ? keccak256(a, b) : keccak256(b, a)
 }
 
 /** Node hashing on bytes, with the custom `NodeHash` adapted when one is given. */

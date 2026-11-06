@@ -3,6 +3,8 @@ import {
   bytesEqual,
   fromHex,
   type HashFunction,
+  hashLeaves,
+  hashNodePairs,
   MerkleError,
   type MerkleProof,
   type MerkleTree,
@@ -26,12 +28,20 @@ export interface BinaryMerkleTreeJSON {
 
 /**
  * A balanced binary Merkle tree, padded to a power of two with empty leaves
- * and stored as a flat array (leaves first, root last). Best when the full
- * leaf set is known up front. Proofs are `O(log n)`.
+ * and stored as one flat byte array (leaves first, root last). Best when the
+ * full leaf set is known up front. Proofs are `O(log n)`.
+ *
+ * Builds hash a whole layer at a time through `hashNodePairs`, so hash
+ * adapters with a batch path (such as `@merkleforge/hash-wasm`) pay one call
+ * per layer instead of one per node. Padding subtrees are filled from
+ * precomputed empty-subtree digests instead of being hashed.
  */
 export class BinaryMerkleTree implements MerkleTree {
   readonly hasher: HashFunction
-  #nodes: Bytes[] = []
+  /** Every node, `digestSize` bytes each: leaf layer, then each parent layer, root last. */
+  #store: Uint8Array = new Uint8Array(0)
+  /** Leaf layer width: a power of two, or 0 for a tree with no storage. */
+  #capacity = 0
   #leafCount = 0
   #height = 0
 
@@ -43,20 +53,20 @@ export class BinaryMerkleTree implements MerkleTree {
   static withCapacity(hasher: HashFunction, capacity: number): BinaryMerkleTree {
     const tree = new BinaryMerkleTree(hasher)
     if (capacity <= 0) return tree
-    const empty = hasher.empty()
-    tree.#nodes = Array.from({ length: nodeCount(nextPowerOfTwo(capacity)) }, () => empty)
+    tree.#allocate(nextPowerOfTwo(capacity))
     tree.#recomputeRoot()
     return tree
   }
 
   /** Builds a tree from raw leaf data in one pass. Throws `EmptyLeafData` for an empty leaf. */
   static fromLeaves(hasher: HashFunction, leaves: Iterable<Bytes>): BinaryMerkleTree {
-    const hashes: Bytes[] = []
-    for (const leaf of leaves) {
+    const list = Array.isArray(leaves) ? (leaves as readonly Bytes[]) : [...leaves]
+    for (const leaf of list) {
       if (leaf.length === 0) throw new MerkleError({ code: 'EmptyLeafData' })
-      hashes.push(hasher.hash(leaf))
     }
-    return BinaryMerkleTree.#fromLeafHashes(hasher, hashes)
+    const digests = new Uint8Array(list.length * hasher.digestSize)
+    hashLeaves(hasher, list, digests)
+    return BinaryMerkleTree.#fromLeafHashes(hasher, digests, list.length)
   }
 
   /** Rebuilds a tree from `toJSON()` output. Throws if it was built with another hash. */
@@ -67,17 +77,19 @@ export class BinaryMerkleTree implements MerkleTree {
         reason: `tree was built with ${json.hashAlgorithm}, expected ${hasher.algorithmName}`,
       })
     }
-    const leaves = json.leaves.map((hex) => {
+    const size = hasher.digestSize
+    const digests = new Uint8Array(json.leaves.length * size)
+    json.leaves.forEach((hex, i) => {
       const digest = fromHex(hex)
-      if (digest.length !== hasher.digestSize) {
+      if (digest.length !== size) {
         throw new MerkleError({
           code: 'DeserializationError',
-          reason: `leaf digest is ${digest.length} bytes, expected ${hasher.digestSize}`,
+          reason: `leaf digest is ${digest.length} bytes, expected ${size}`,
         })
       }
-      return digest
+      digests.set(digest, i * size)
     })
-    return BinaryMerkleTree.#fromLeafHashes(hasher, leaves)
+    return BinaryMerkleTree.#fromLeafHashes(hasher, digests, json.leaves.length)
   }
 
   /**
@@ -130,14 +142,14 @@ export class BinaryMerkleTree implements MerkleTree {
   }
 
   root(): Bytes | undefined {
-    return this.isEmpty() ? undefined : this.#nodes.at(-1)?.slice()
+    return this.isEmpty() ? undefined : this.#node(this.#nodeCount() - 1).slice()
   }
 
   insert(data: Bytes): number {
     if (data.length === 0) throw new MerkleError({ code: 'EmptyLeafData' })
     const index = this.#leafCount
     this.#ensureLeafCapacity(index + 1)
-    this.#nodes[index] = this.hasher.hash(data)
+    this.#setNode(index, this.hasher.hash(data))
     this.#leafCount += 1
     this.#height = log2(this.#leafCapacity()) + 1
     this.#recomputePath(index)
@@ -146,7 +158,7 @@ export class BinaryMerkleTree implements MerkleTree {
 
   remove(index: number): void {
     this.#checkIndex(index)
-    this.#nodes[index] = this.hasher.empty()
+    this.#setNode(index, this.hasher.empty())
     this.#trimEmptyTrailingLeaves()
 
     if (this.#leafCount === 0) {
@@ -212,7 +224,7 @@ export class BinaryMerkleTree implements MerkleTree {
     return {
       leafCount: this.#leafCount,
       height: this.#height,
-      nodeCount: this.#nodes.length,
+      nodeCount: this.#nodeCount(),
       hashAlgorithm: this.hasher.algorithmName,
       variant: 'BinaryMerkleTree',
     }
@@ -221,20 +233,19 @@ export class BinaryMerkleTree implements MerkleTree {
   toJSON(): BinaryMerkleTreeJSON {
     return {
       hashAlgorithm: this.hasher.algorithmName,
-      leaves: this.#nodes.slice(0, this.#leafCount).map(toHex),
+      leaves: Array.from({ length: this.#leafCount }, (_, i) => toHex(this.#node(i))),
     }
   }
 
-  static #fromLeafHashes(hasher: HashFunction, hashes: Bytes[]): BinaryMerkleTree {
+  /** Builds a tree from `count` leaf digests laid out back to back in `digests`. */
+  static #fromLeafHashes(hasher: HashFunction, digests: Bytes, count: number): BinaryMerkleTree {
     const tree = new BinaryMerkleTree(hasher)
-    if (hashes.length === 0) return tree
+    if (count === 0) return tree
 
-    const capacity = nextPowerOfTwo(hashes.length)
-    const empty = hasher.empty()
-    tree.#leafCount = hashes.length
-    tree.#nodes = hashes.concat(
-      Array.from({ length: nodeCount(capacity) - hashes.length }, () => empty),
-    )
+    const capacity = nextPowerOfTwo(count)
+    tree.#allocate(capacity)
+    tree.#store.set(digests)
+    tree.#leafCount = count
     tree.#trimEmptyTrailingLeaves()
     if (tree.#leafCount === 0) return new BinaryMerkleTree(hasher)
 
@@ -252,14 +263,29 @@ export class BinaryMerkleTree implements MerkleTree {
     }
   }
 
+  /** A view (not a copy) of node `i`. Copy it before handing it out. */
   #node(i: number): Bytes {
-    const node = this.#nodes[i]
-    if (node === undefined) throw new RangeError(`node ${i} is out of range`)
-    return node
+    if (i < 0 || i >= this.#nodeCount()) throw new RangeError(`node ${i} is out of range`)
+    const size = this.hasher.digestSize
+    return this.#store.subarray(i * size, (i + 1) * size)
+  }
+
+  #setNode(i: number, digest: Bytes): void {
+    this.#store.set(checkDigest(digest, this.hasher.digestSize), i * this.hasher.digestSize)
+  }
+
+  #nodeCount(): number {
+    return this.#capacity === 0 ? 0 : nodeCount(this.#capacity)
   }
 
   #leafCapacity(): number {
-    return Math.ceil(this.#nodes.length / 2)
+    return this.#capacity
+  }
+
+  /** Replaces storage with `capacity` leaves' worth of zeroed nodes. */
+  #allocate(capacity: number): void {
+    this.#capacity = capacity
+    this.#store = new Uint8Array(nodeCount(capacity) * this.hasher.digestSize)
   }
 
   #ensureLeafCapacity(required: number): void {
@@ -267,11 +293,11 @@ export class BinaryMerkleTree implements MerkleTree {
   }
 
   #resizeLeafLayer(capacity: number): void {
-    const empty = this.hasher.empty()
+    const size = this.hasher.digestSize
     const keep = Math.min(this.#leafCount, capacity)
-    const nodes = Array.from({ length: nodeCount(capacity) }, () => empty)
-    for (let i = 0; i < keep; i++) nodes[i] = this.#node(i)
-    this.#nodes = nodes
+    const leaves = this.#store.subarray(0, keep * size)
+    this.#allocate(capacity)
+    this.#store.set(leaves)
     this.#recomputeRoot()
   }
 
@@ -282,21 +308,34 @@ export class BinaryMerkleTree implements MerkleTree {
     }
   }
 
+  /**
+   * Recomputes every internal node. Only the pairs above real leaves are
+   * hashed; the rest of each layer is the digest of an all-empty subtree of
+   * that height, which is the same value everywhere and is computed once.
+   */
   #recomputeRoot(): void {
+    if (this.#capacity === 0) return
+    const size = this.hasher.digestSize
+    const store = this.#store
+    let zero = this.hasher.empty()
     let layerStart = 0
-    let layerWidth = this.#leafCapacity()
-    let parentStart = layerWidth
+    let layerWidth = this.#capacity
+    let populated = this.#leafCount
+    fill(store, zero, layerStart + populated, layerStart + layerWidth, size)
 
     while (layerWidth > 1) {
-      for (let offset = 0; offset < layerWidth / 2; offset++) {
-        this.#nodes[parentStart + offset] = this.hasher.hashNodes(
-          this.#node(layerStart + offset * 2),
-          this.#node(layerStart + offset * 2 + 1),
-        )
-      }
-      layerStart = parentStart
+      const parentStart = layerStart + layerWidth
+      const pairs = Math.ceil(populated / 2)
+      hashNodePairs(
+        this.hasher,
+        store.subarray(layerStart * size, (layerStart + 2 * pairs) * size),
+        store.subarray(parentStart * size, (parentStart + pairs) * size),
+      )
+      zero = this.hasher.hashNodes(zero, zero)
       layerWidth /= 2
-      parentStart += layerWidth
+      fill(store, zero, parentStart + pairs, parentStart + layerWidth, size)
+      layerStart = parentStart
+      populated = pairs
     }
   }
 
@@ -308,9 +347,9 @@ export class BinaryMerkleTree implements MerkleTree {
 
     while (layerWidth > 1) {
       const pair = offset - (offset % 2)
-      this.#nodes[parentStart + Math.floor(offset / 2)] = this.hasher.hashNodes(
-        this.#node(layerStart + pair),
-        this.#node(layerStart + pair + 1),
+      this.#setNode(
+        parentStart + Math.floor(offset / 2),
+        this.hasher.hashNodes(this.#node(layerStart + pair), this.#node(layerStart + pair + 1)),
       )
       offset = Math.floor(offset / 2)
       layerStart = parentStart
@@ -318,6 +357,23 @@ export class BinaryMerkleTree implements MerkleTree {
       parentStart += layerWidth
     }
   }
+}
+
+/** Writes `digest` into nodes `from..to` of `store` (`size` bytes per node), by doubling copies. */
+function fill(store: Uint8Array, digest: Bytes, from: number, to: number, size: number): void {
+  if (from >= to) return
+  store.set(checkDigest(digest, size), from * size)
+  for (let done = 1; done < to - from; done *= 2) {
+    const n = Math.min(done, to - from - done)
+    store.copyWithin((from + done) * size, from * size, (from + n) * size)
+  }
+}
+
+function checkDigest(digest: Bytes, size: number): Bytes {
+  if (digest.length !== size) {
+    throw new RangeError(`hash returned ${digest.length} bytes, expected digestSize ${size}`)
+  }
+  return digest
 }
 
 function nextPowerOfTwo(n: number): number {

@@ -66,8 +66,7 @@
   "dependencies": {
     "@merkleforge/core": "workspace:^",
     "@merkleforge/hash": "workspace:^",
-    "@merkleforge/variants": "workspace:^",
-    "@noble/hashes": "^2.4.0"
+    "@merkleforge/variants": "workspace:^"
   },
   "devDependencies": {
     "@merkleforge/hash-wasm": "workspace:^"

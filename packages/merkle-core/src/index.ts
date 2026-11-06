@@ -19,6 +19,8 @@ export {
   defineHashFunction,
   type HashFunction,
   type HashFunctionSpec,
+  hashLeaves,
+  hashNodePairs,
   LEAF_PREFIX,
   NODE_PREFIX,
 } from './hash-function.js'

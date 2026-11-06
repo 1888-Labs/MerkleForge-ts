@@ -1,0 +1,119 @@
+{
+  "date": "2026-11-06",
+  "node": "v24.15.0",
+  "ops": 2000,
+  "rows": [
+    {
+      "check": "`keccak256` (@merkleforge/hash)",
+      "against": "`keccak_256` (@noble/hashes 2.4.0)",
+      "n": null,
+      "compared": "101,025 digests, lengths 0–1024 + random",
+      "identical": true
+    },
+    {
+      "check": "`SimpleMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 1024,
+      "compared": "root, full dump (2,047 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`StandardMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 1024,
+      "compared": "root, full dump (2,047 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` + @merkleforge/hash-wasm",
+      "against": "`BinaryMerkleTree` + @merkleforge/hash (pure JS)",
+      "n": 1024,
+      "compared": "root, 2000 encoded proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` Keccak-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 1024,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` SHA-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 1024,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    },
+    {
+      "check": "`SimpleMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 16384,
+      "compared": "root, full dump (32,767 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`StandardMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 16384,
+      "compared": "root, full dump (32,767 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` + @merkleforge/hash-wasm",
+      "against": "`BinaryMerkleTree` + @merkleforge/hash (pure JS)",
+      "n": 16384,
+      "compared": "root, 2000 encoded proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` Keccak-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 16384,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` SHA-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 16384,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    },
+    {
+      "check": "`SimpleMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 131072,
+      "compared": "root, full dump (262,143 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`StandardMerkleTree` (@merkleforge/openzeppelin)",
+      "against": "@openzeppelin/merkle-tree 1.0.8",
+      "n": 131072,
+      "compared": "root, full dump (262,143 nodes), 2000 proofs, 1 multiproof",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` + @merkleforge/hash-wasm",
+      "against": "`BinaryMerkleTree` + @merkleforge/hash (pure JS)",
+      "n": 131072,
+      "compared": "root, 2000 encoded proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` Keccak-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 131072,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    },
+    {
+      "check": "`BinaryMerkleTree` SHA-256 (@merkleforge/variants)",
+      "against": "Rust `merkle-variants` `BinaryMerkleTree`",
+      "n": 131072,
+      "compared": "root, bincode bytes of 2000 proofs",
+      "identical": true
+    }
+  ]
+}
