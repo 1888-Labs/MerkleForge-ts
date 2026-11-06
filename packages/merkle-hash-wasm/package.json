@@ -1,6 +1,6 @@
 {
   "name": "@merkleforge/hash-wasm",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "WebAssembly Keccak-256 and SHA-256 for Merkle trees with batch layer hashing, no runtime dependencies beyond @merkleforge/core. Same output as @merkleforge/hash. Part of MerkleForge.",
   "license": "MIT OR Apache-2.0",
   "author": "Blessing Samuel <dicethedev>",
