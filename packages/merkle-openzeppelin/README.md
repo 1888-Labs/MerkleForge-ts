@@ -136,8 +136,8 @@ Errors are `MerkleError` from `@merkleforge/core` (`EmptyTree`,
 ## Performance
 
 Same output, less work: at 131,072 `[address, uint256]` leaves it builds the
-tree in 3.1 s against OpenZeppelin's 15.2 s, and generates and verifies proofs
-about 2x faster. See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
+tree in 1.7 s against OpenZeppelin's 21.0 s (12x faster), and generates and
+verifies proofs 4–6x faster. See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
 
 ## How it is tested
 

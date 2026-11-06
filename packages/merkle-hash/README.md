@@ -29,7 +29,7 @@
 JavaScript. SHA-256 and BLAKE3 come from
 [`@noble/hashes`](https://github.com/paulmillr/noble-hashes); Keccak-256 uses
 MerkleForge's own unrolled sponge, about 2x faster than noble's on the short
-inputs trees hash and tested against it byte for byte. Every tree in
+inputs trees hash ([measured](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md#keccak-256-per-call)) and tested against it byte for byte. Every tree in
 `@merkleforge/variants` takes one, so switching algorithms is a one-word
 change, and each produces the same digests as the Rust `merkleforge-hash` crate.
 
@@ -73,7 +73,8 @@ digest per node.
 `data || more` when `more` is given), the same as `keccak_256` from
 `@noble/hashes`.
 
-For WebAssembly hashing that builds trees about 5–7x faster again, use
+For WebAssembly hashing that builds trees 3–7x faster again (6.5x at 131,072
+leaves, see [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md)), use
 [`@merkleforge/hash-wasm`](https://www.npmjs.com/package/@merkleforge/hash-wasm),
 which returns the same digests.
 

@@ -176,7 +176,7 @@ At 131,072 leaves, `BinaryMerkleTree` with `@merkleforge/hash-wasm` builds a
 Keccak-256 tree in 98 ms (merkletreejs 935 ms, OpenZeppelin 10,493 ms), 5x
 faster than 0.2.2, and generates a proof in 2–3 µs. The pure-JS adapter
 builds the same tree in 637 ms. `@merkleforge/openzeppelin` builds
-OpenZeppelin airdrop trees 8–13x faster than `@openzeppelin/merkle-tree` with
+OpenZeppelin airdrop trees 8–15x faster than `@openzeppelin/merkle-tree` with
 identical output. Everything installs with one to three dependencies. Full
 results, including `@aztec/merkle-tree` and `@aztec/world-state`, and what each
 number does and does not compare: [BENCHMARKS.md](BENCHMARKS.md).

@@ -144,8 +144,9 @@ function adapter(algorithmName: string, engine: Engine, encodedNode = false): Ha
 /**
  * Keccak-256 backed by WebAssembly. Same output and `algorithmName` as
  * `Keccak256` from `@merkleforge/hash`, so trees, proofs, and JSON built with
- * either are interchangeable. Builds trees about 10x faster in Node because
- * it hashes whole tree layers in one call (`hashNodePairs`).
+ * either are interchangeable. Builds large trees about 6–7x faster than the
+ * pure-JS adapter in Node because it hashes whole tree layers in one call
+ * (`hashNodePairs`). Numbers and how to reproduce them: BENCHMARKS.md.
  */
 export async function createKeccak256Wasm(): Promise<HashFunction> {
   const x = await instantiate()

@@ -27,13 +27,30 @@ At 131,072 leaves:
 - With pure-JS Keccak it is now 1.5x faster than merkletreejs (it was 1.4x
   slower in 0.2.2).
 - `@merkleforge/openzeppelin` gives the same roots and proofs as
-  `@openzeppelin/merkle-tree` while building trees 8–13x faster, generating
+  `@openzeppelin/merkle-tree` while building trees 8–15x faster, generating
   proofs 4–6x faster, and verifying them 4–5x faster.
+
+## Where each claim comes from
+
+Every speed claim in this repo's READMEs, doc comments, and changesets points
+at a table in this file:
+
+| Claim | Where it is used | Backed by |
+|---|---|---|
+| `hash-wasm` builds a 131,072-leaf Keccak-256 tree 5x faster than 0.2.2 (485 → 98 ms) | README, `@merkleforge/hash-wasm` README, changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| Pure-JS `BinaryMerkleTree` builds 3.3x faster than 0.2.2 (2,119 → 637 ms) | changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| `hash-wasm` builds trees 3–7x faster than the pure-JS adapter (6.5x at 131,072 leaves) | `@merkleforge/hash` README, `createKeccak256Wasm` doc comment | [Results](#results), first two rows of each bytes32 table |
+| `hash-wasm` builds about 10x faster than merkletreejs and 100x faster than OpenZeppelin | README, [Summary](#summary) | [Results](#results), 131,072 leaves |
+| `@merkleforge/openzeppelin` builds 8–15x faster than `@openzeppelin/merkle-tree`, proofs 4–6x, verify 4–5x | README, `@merkleforge/openzeppelin` README | [Results](#results), `SimpleMerkleTree` and `StandardMerkleTree` rows |
+| OpenZeppelin-compatible trees build about 2x faster than 0.2.2 | changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| `keccak256` is about 2x faster than `keccak_256` from `@noble/hashes` | `@merkleforge/hash` README, `keccak256` doc comment, changeset | [Keccak-256 per call](#keccak-256-per-call) |
+
+All of them can be rerun with the commands in [Reproduce](#reproduce).
 
 ## What changed since 0.2.2
 
-Same machine, same harness, 131,072 leaves (0.2.2 numbers from the previous
-run of this file):
+Same machine, same harness, 131,072 leaves. The 0.2.2 column is `bench/` run
+at the `v0.2.2` tag (see [Reproduce](#reproduce)):
 
 | Case | 0.2.2 | This version | Speedup |
 |---|---:|---:|---:|
@@ -164,6 +181,24 @@ What differs between libraries, so the numbers are not like for like:
 
 Node v24.15.0, 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz, linux 7.0.0-38-generic. Build is the median of 3 runs; proof and verify are the mean over 2000 random leaves.
 
+## Keccak-256 per call
+
+Plain Keccak-256 (`keccak256` from `@merkleforge/hash`, no domain prefix)
+against `keccak_256` from `@noble/hashes` 2.4.0, on the input sizes trees hash:
+32-byte leaves, 33-byte prefixed leaves, 64- and 65-byte node pairs, and one
+full 136-byte block. Both produce the same digests; the script checks this
+before timing.
+
+| Input | @noble/hashes keccak_256 | @merkleforge/hash keccak256 | Speedup |
+|---:|---:|---:|---:|
+| 32 B | 7.00 µs | 3.25 µs | 2.2x |
+| 33 B | 8.86 µs | 3.32 µs | 2.7x |
+| 64 B | 7.85 µs | 3.37 µs | 2.3x |
+| 65 B | 7.57 µs | 3.43 µs | 2.2x |
+| 136 B | 14.44 µs | 5.30 µs | 2.7x |
+
+Node v24.15.0, 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz, linux 7.0.0-38-generic. Median of 5 rounds of 200,000 calls per size.
+
 ## Install footprint
 
 Dependencies installed with each library, not counting the library itself,
@@ -184,10 +219,46 @@ not as general-purpose tree libraries.
 
 ## Reproduce
 
+Everything here runs from [`bench/`](bench), a standalone npm project kept
+out of the pnpm workspace so CI never installs the comparison libraries (the
+Aztec packages alone are over 1 GB). It imports MerkleForge from the
+workspace's `packages/*/dist`, so build first.
+
+### Library comparison ([Results](#results), [Summary](#summary))
+
 ```sh
 pnpm install && pnpm build   # in the repo root
 cd bench
-npm install                  # comparison libraries, kept out of the pnpm workspace
-npm run bench                # writes results.json; SIZES, OPS, and BUILD_RUNS env vars adjust the run
-node report.mjs              # prints the tables above
+npm install                  # comparison libraries
+npm run bench                # writes results.json; takes a few minutes
+node report.mjs              # prints the Results tables as Markdown
 ```
+
+`SIZES` (default `1024,16384,131072`), `OPS` (default `2000`), and
+`BUILD_RUNS` (default `3`) adjust the run, for example
+`SIZES=131072 BUILD_RUNS=5 npm run bench`. `npm run bench` passes
+`--expose-gc` so each timed build starts after a garbage collection.
+
+### Keccak-256 per call ([Keccak-256 per call](#keccak-256-per-call))
+
+```sh
+cd bench
+npm run bench:keccak         # CALLS adjusts the hashes per size (default 200000)
+```
+
+This one needs only `@noble/hashes` from `bench/`'s dependencies.
+
+### Against 0.2.2 ([What changed since 0.2.2](#what-changed-since-022))
+
+Run the same harness at the `v0.2.2` tag in a second worktree, then compare
+the two `report.mjs` outputs:
+
+```sh
+git worktree add ../merkleforge-0.2.2 v0.2.2
+cd ../merkleforge-0.2.2
+pnpm install && pnpm build
+cd bench && npm install && SIZES=131072 npm run bench && node report.mjs
+```
+
+Run both versions back to back on an idle machine; timings on a laptop drift
+by 10–30% between runs, so compare ratios rather than single numbers.
