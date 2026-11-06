@@ -131,6 +131,27 @@ jobs:
       - run: node scripts/gen-keccak.mjs && pnpm exec biome format --write packages/merkle-hash/src/keccak-f1600.ts
       - run: git diff --exit-code packages/merkle-hash-wasm/src/wasm-module.ts packages/merkle-hash/src/keccak-f1600.ts
 
+  parity:
+    name: Byte-for-byte parity (OpenZeppelin, Rust, noble)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # The released Rust crates (main), where scripts/rust-vectors expects them.
+      - run: git clone --depth 1 --branch main https://github.com/1888-Labs/MerkleForge.git ../MerkleForge
+      # Only the libraries parity.mjs compares against, not bench/'s full (1 GB+) dependency set.
+      - run: |
+          npm install --prefix "$RUNNER_TEMP/parity" @openzeppelin/merkle-tree@1.0.8 @noble/hashes@2.4.0
+          ln -s "$RUNNER_TEMP/parity/node_modules" bench/node_modules
+      # rustup reads the toolchain from scripts/rust-vectors/rust-toolchain.toml.
+      - run: node bench/parity.mjs >> "$GITHUB_STEP_SUMMARY"
+
   solidity:
     name: Solidity verifiers
     runs-on: ubuntu-latest
