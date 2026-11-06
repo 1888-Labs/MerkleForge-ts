@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
-    "@biomejs/biome": "2.6.2",
+    "@biomejs/biome": "2.6.4",
     "@changesets/cli": "3.0.3",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitest/browser-playwright": "5.0.5",
     "@vitest/coverage-v8": "5.0.5",
     "fast-check": "4.10.2",
