@@ -1,0 +1,7 @@
+[build]
+target = "wasm32-unknown-unknown"
+
+[target.wasm32-unknown-unknown]
+# JavaScript allocates from __heap_base upward; 64 KiB of stack is plenty
+# (the hash functions use a few hundred bytes).
+rustflags = ["-C", "link-arg=--export=__heap_base", "-C", "link-arg=-zstack-size=65536"]

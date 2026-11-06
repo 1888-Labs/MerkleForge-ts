@@ -69,6 +69,68 @@ jobs:
           if (!BinaryMerkleTree.verify(Keccak256, tree.root(), utf8('b'), tree.generateProof(1))) process.exit(1)
           "
 
+  browsers:
+    name: Test (browsers)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      # The whole Vitest suite, in Chromium, Firefox, and WebKit.
+      - run: pnpm test:browser
+
+  runtimes:
+    name: Runtime (${{ matrix.runtime }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [node, deno, bun]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - if: matrix.runtime == 'deno'
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - if: matrix.runtime == 'bun'
+        uses: oven-sh/setup-bun@v2
+      # Loads the built packages (what npm users get) and checks roots against
+      # the Rust vectors, WASM against pure JS, and a mainnet eth_getProof.
+      - if: matrix.runtime == 'node'
+        run: node test/runtime/check.mjs
+      - if: matrix.runtime == 'deno'
+        run: deno run --allow-read --allow-env test/runtime/check.mjs
+      - if: matrix.runtime == 'bun'
+        run: bun test/runtime/check.mjs
+
+  generated:
+    name: Generated code is up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # rustup reads the toolchain and wasm32 target from scripts/wasm-hash/rust-toolchain.toml.
+      - run: pnpm build:wasm
+      - run: node scripts/gen-keccak.mjs && pnpm exec biome format --write packages/merkle-hash/src/keccak-f1600.ts
+      - run: git diff --exit-code packages/merkle-hash-wasm/src/wasm-module.ts packages/merkle-hash/src/keccak-f1600.ts
+
   solidity:
     name: Solidity verifiers
     runs-on: ubuntu-latest

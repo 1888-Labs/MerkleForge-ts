@@ -35,7 +35,8 @@ multiproof, and `dump()` is identical, so:
 - switching is a one-line import change.
 
 It ships its own `abi.encode`, so it depends only on `@merkleforge/core` and
-[`@noble/hashes`](https://github.com/paulmillr/noble-hashes), not on
+`@merkleforge/hash` (whose Keccak-256 is cross-checked against
+[`@noble/hashes`](https://github.com/paulmillr/noble-hashes)), not on
 `@metamask/abi-utils` or `ethereum-cryptography`.
 
 ## Install
@@ -135,8 +136,8 @@ Errors are `MerkleError` from `@merkleforge/core` (`EmptyTree`,
 ## Performance
 
 Same output, less work: at 131,072 `[address, uint256]` leaves it builds the
-tree in 3.1 s against OpenZeppelin's 15.2 s, and generates and verifies proofs
-about 2x faster. See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
+tree in 1.7 s against OpenZeppelin's 21.0 s (12x faster), and generates and
+verifies proofs 4–6x faster. See [BENCHMARKS.md](https://github.com/1888-Labs/MerkleForge-ts/blob/main/BENCHMARKS.md).
 
 ## How it is tested
 

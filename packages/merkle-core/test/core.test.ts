@@ -4,6 +4,8 @@ import {
   concatBytes,
   defineHashFunction,
   fromHex,
+  hashLeaves,
+  hashNodePairs,
   isMerkleError,
   MerkleError,
   toHex,
@@ -52,6 +54,47 @@ describe('defineHashFunction', () => {
     const a = Xor8.empty()
     a[0] = 0xff
     expect(Xor8.empty()).toEqual(Uint8Array.of(0))
+  })
+})
+
+describe('hashNodePairs and hashLeaves', () => {
+  it('fall back to hashNodes and hash when the adapter has no batch path', () => {
+    expect(Xor8.hashNodePairs).toBeUndefined()
+    const out = new Uint8Array(2)
+    hashNodePairs(Xor8, Uint8Array.of(1, 2, 4, 8), out)
+    expect(out).toEqual(Uint8Array.of(0x01 ^ 1 ^ 2, 0x01 ^ 4 ^ 8))
+    hashLeaves(Xor8, [utf8('a'), utf8('bc')], out)
+    expect(out).toEqual(Uint8Array.of(...Xor8.hash(utf8('a')), ...Xor8.hash(utf8('bc'))))
+  })
+
+  it('use the batch path when the adapter has one', () => {
+    const calls: string[] = []
+    const Batched = defineHashFunction({
+      algorithmName: 'XOR8',
+      digestSize: 1,
+      hash: Xor8.hash,
+      hashNodePairs: (input, output) => {
+        calls.push('pairs')
+        hashNodePairs(Xor8, input, output)
+      },
+      hashLeaves: (leaves, output) => {
+        calls.push('leaves')
+        hashLeaves(Xor8, leaves, output)
+      },
+    })
+    hashNodePairs(Batched, Uint8Array.of(1, 2), new Uint8Array(1))
+    hashLeaves(Batched, [utf8('a')], new Uint8Array(1))
+    hashNodePairs(Batched, new Uint8Array(0), new Uint8Array(0))
+    expect(calls).toEqual(['pairs', 'leaves'])
+  })
+
+  it('reject bad sizes', () => {
+    expect(() => hashNodePairs(Xor8, Uint8Array.of(1, 2, 3), new Uint8Array(2))).toThrow(RangeError)
+    expect(() => hashNodePairs(Xor8, Uint8Array.of(1, 2), new Uint8Array(0))).toThrow(RangeError)
+    expect(() => hashLeaves(Xor8, [utf8('a')], new Uint8Array(0))).toThrow(RangeError)
+    const Liar = defineHashFunction({ algorithmName: 'liar', digestSize: 2, hash: Xor8.hash })
+    expect(() => hashLeaves(Liar, [utf8('a')], new Uint8Array(2))).toThrow(/digestSize/)
+    expect(() => hashNodePairs(Liar, new Uint8Array(4), new Uint8Array(2))).toThrow(/digestSize/)
   })
 })
 

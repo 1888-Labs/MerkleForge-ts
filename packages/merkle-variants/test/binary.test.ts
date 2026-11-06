@@ -1,5 +1,13 @@
-import { fromHex, isMerkleError, type MerkleProof, toHex, utf8 } from '@merkleforge/core'
+import {
+  defineHashFunction,
+  fromHex,
+  isMerkleError,
+  type MerkleProof,
+  toHex,
+  utf8,
+} from '@merkleforge/core'
 import { Blake3, Keccak256, Sha256 } from '@merkleforge/hash'
+import { createKeccak256Wasm } from '@merkleforge/hash-wasm'
 import { describe, expect, it } from 'vitest'
 import { BinaryMerkleTree } from '../src/index.js'
 import vectors from './rust-vectors.json' with { type: 'json' }
@@ -116,5 +124,60 @@ describe('BinaryMerkleTree', () => {
     const root = tree.root()
     if (root) root[0] = (root[0] ?? 0) ^ 0xff
     expect(tree.root()).not.toEqual(root)
+  })
+})
+
+describe('BinaryMerkleTree batch building', () => {
+  // No hashNodePairs or hashLeaves: exercises the one-call-per-node fallback.
+  const Plain = defineHashFunction({
+    algorithmName: Keccak256.algorithmName,
+    digestSize: 32,
+    hash: Keccak256.hash,
+    hashNodes: Keccak256.hashNodes,
+  })
+
+  it('gives the same tree with batch, WebAssembly, and per-node hashing', async () => {
+    const Wasm = await createKeccak256Wasm()
+    for (const n of [1, 2, 3, 5, 8, 9, 31, 33, 100, 1025]) {
+      const data = leaves(n)
+      const reference = BinaryMerkleTree.fromLeaves(Plain, data)
+      for (const H of [Keccak256, Wasm]) {
+        const tree = BinaryMerkleTree.fromLeaves(H, data)
+        expect(tree.root()).toEqual(reference.root())
+        expect(tree.metadata()).toEqual(reference.metadata())
+        expect(tree.generateProof(n - 1)).toEqual(reference.generateProof(n - 1))
+      }
+      const inserted = new BinaryMerkleTree(Plain)
+      for (const leaf of data) inserted.insert(leaf)
+      expect(inserted.root()).toEqual(reference.root())
+    }
+  })
+
+  it('accepts any iterable of leaves', () => {
+    const data = leaves(5)
+    const fromSet = BinaryMerkleTree.fromLeaves(Keccak256, new Set(data))
+    expect(fromSet.root()).toEqual(BinaryMerkleTree.fromLeaves(Keccak256, data).root())
+  })
+
+  it('rejects a hash whose digests do not match digestSize', () => {
+    const Liar = defineHashFunction({ algorithmName: 'liar', digestSize: 16, hash: Sha256.hash })
+    expect(() => BinaryMerkleTree.fromLeaves(Liar, leaves(2))).toThrow(/digestSize/)
+    expect(() => new BinaryMerkleTree(Liar).insert(utf8('a'))).toThrow(/digestSize/)
+  })
+
+  it('does not expose internal storage', () => {
+    const tree = BinaryMerkleTree.fromLeaves(Keccak256, leaves(4))
+    const root = tree.root() as Uint8Array
+    root.fill(0)
+    tree.generateProof(0).path[0]?.hash.fill(0)
+    expect(tree.root()).not.toEqual(root)
+    expect(
+      BinaryMerkleTree.verify(
+        Keccak256,
+        tree.root() as Uint8Array,
+        leaves(4)[0] as Uint8Array,
+        tree.generateProof(0),
+      ),
+    ).toBe(true)
   })
 })

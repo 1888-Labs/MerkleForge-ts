@@ -14,20 +14,74 @@ At 131,072 leaves:
 
 | Task | MerkleForge | Others |
 |---|---|---|
-| Build a Keccak-256 tree | **485 ms** with `hash-wasm`, 2,119 ms pure JS | merkletreejs 1,544 ms · Aztec StandardTree 2,669 ms · OpenZeppelin 14,518 ms |
-| Build an OpenZeppelin airdrop tree (`[address, uint256]`) | **3,070 ms** (`@merkleforge/openzeppelin`) | OpenZeppelin 15,197 ms (4.9x slower) |
-| Generate one proof | **8–11 µs** (`BinaryMerkleTree`) | merkletreejs 37 µs · Aztec 51–53 µs · OpenZeppelin 743 µs |
-| Verify one proof | **41 µs** with `hash-wasm`, 148 µs pure JS | Aztec StandardTree 168 µs · merkletreejs 538 µs · OpenZeppelin 474 µs |
-| Install footprint | **1–2 dependencies, about 1.4 MB** | merkletreejs 3, 1 MB · OpenZeppelin 38, 16 MB · Aztec merkle-tree 362, 395 MB · Aztec world-state 377, 1.1 GB |
+| Build a Keccak-256 tree | **98 ms** with `hash-wasm`, 637 ms pure JS | merkletreejs 935 ms · Aztec StandardTree 2,668 ms · OpenZeppelin 10,493 ms |
+| Build an OpenZeppelin airdrop tree (`[address, uint256]`) | **1,708 ms** (`@merkleforge/openzeppelin`) | OpenZeppelin 21,021 ms (12x slower) |
+| Generate one proof | **2–3 µs** (`BinaryMerkleTree`) | merkletreejs 4 µs · Aztec 54–58 µs · OpenZeppelin 312 µs |
+| Verify one proof | **18 µs** with `hash-wasm`, 52 µs pure JS | merkletreejs 127 µs · Aztec StandardTree 177 µs · OpenZeppelin 292 µs |
+| Install footprint | **1–3 dependencies, about 1.1–1.4 MB** | merkletreejs 3, 1 MB · OpenZeppelin 38, 16 MB · Aztec merkle-tree 362, 395 MB · Aztec world-state 377, 1.1 GB |
 
+- `BinaryMerkleTree` with `@merkleforge/hash-wasm` builds a Keccak-256 tree
+  about 10x faster than merkletreejs and 100x faster than OpenZeppelin, even
+  though it hashes every leaf with a domain prefix (`H(0x00 || leaf)`, twice
+  the hashing of merkletreejs, which uses leaves as nodes directly).
+- With pure-JS Keccak it is now 1.5x faster than merkletreejs (it was 1.4x
+  slower in 0.2.2).
 - `@merkleforge/openzeppelin` gives the same roots and proofs as
-  `@openzeppelin/merkle-tree` while building trees 4–9x faster, generating
-  proofs 2–4x faster, and verifying them about 2x faster.
-- With pure-JS Keccak, `BinaryMerkleTree` builds about 1.4x slower than
-  merkletreejs because it hashes every leaf with a domain prefix
-  (`H(0x00 || leaf)`), which protects against second-preimage attacks. That is
-  twice the hashing; merkletreejs uses leaves as nodes directly. With
-  `@merkleforge/hash-wasm` it is 3.2x faster than merkletreejs.
+  `@openzeppelin/merkle-tree` while building trees 8–15x faster, generating
+  proofs 4–6x faster, and verifying them 4–5x faster.
+
+## Where each claim comes from
+
+Every speed claim in this repo's READMEs, doc comments, and changesets points
+at a table in this file:
+
+| Claim | Where it is used | Backed by |
+|---|---|---|
+| `hash-wasm` builds a 131,072-leaf Keccak-256 tree 5x faster than 0.2.2 (485 → 98 ms) | README, `@merkleforge/hash-wasm` README, changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| Pure-JS `BinaryMerkleTree` builds 3.3x faster than 0.2.2 (2,119 → 637 ms) | changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| `hash-wasm` builds trees 3–7x faster than the pure-JS adapter (6.5x at 131,072 leaves) | `@merkleforge/hash` README, `createKeccak256Wasm` doc comment | [Results](#results), first two rows of each bytes32 table |
+| `hash-wasm` builds about 10x faster than merkletreejs and 100x faster than OpenZeppelin | README, [Summary](#summary) | [Results](#results), 131,072 leaves |
+| `@merkleforge/openzeppelin` builds 8–15x faster than `@openzeppelin/merkle-tree`, proofs 4–6x, verify 4–5x | README, `@merkleforge/openzeppelin` README | [Results](#results), `SimpleMerkleTree` and `StandardMerkleTree` rows |
+| OpenZeppelin-compatible trees build about 2x faster than 0.2.2 | changeset | [What changed since 0.2.2](#what-changed-since-022) |
+| `keccak256` is about 2x faster than `keccak_256` from `@noble/hashes` | `@merkleforge/hash` README, `keccak256` doc comment, changeset | [Keccak-256 per call](#keccak-256-per-call) |
+
+All of them can be rerun with the commands in [Reproduce](#reproduce).
+
+## What changed since 0.2.2
+
+Same machine, same harness, 131,072 leaves. The 0.2.2 column is `bench/` run
+at the `v0.2.2` tag (see [Reproduce](#reproduce)):
+
+| Case | 0.2.2 | This version | Speedup |
+|---|---:|---:|---:|
+| `BinaryMerkleTree` build, `hash-wasm` | 485 ms | 98 ms | 5.0x |
+| `BinaryMerkleTree` build, pure JS | 2,119 ms | 637 ms | 3.3x |
+| `BinaryMerkleTree` proof | 8–11 µs | 2–3 µs | 3–5x |
+| `BinaryMerkleTree` verify, `hash-wasm` | 40.8 µs | 17.9 µs | 2.3x |
+| `BinaryMerkleTree` verify, pure JS | 148 µs | 52 µs | 2.8x |
+| `SimpleMerkleTree` build (OpenZeppelin-compatible) | 1,561 ms | 825 ms | 1.9x |
+| `StandardMerkleTree` build (OpenZeppelin-compatible) | 3,070 ms | 1,708 ms | 1.8x |
+
+Where it comes from:
+
+- **Batch hashing.** `HashFunction` adapters can implement `hashNodePairs`
+  and `hashLeaves`. `@merkleforge/hash-wasm` uses them to hash a whole tree
+  layer in one call into WebAssembly instead of one call per node.
+- **A new WebAssembly module.** `@merkleforge/hash-wasm` no longer wraps
+  `hash-wasm`; it embeds a 9 KB `no_std` Rust module
+  ([`scripts/wasm-hash`](scripts/wasm-hash)) with an unrolled Keccak-f[1600]
+  and, where the engine supports WebAssembly SIMD, two permutations at once.
+- **A faster pure-JS Keccak.** `Keccak256` in `@merkleforge/hash` uses an
+  unrolled permutation over local variables (generated by
+  [`scripts/gen-keccak.mjs`](scripts/gen-keccak.mjs)), about 2x faster than
+  `@noble/hashes` per call, and the OpenZeppelin and Ethereum packages use it.
+- **Flat storage.** `BinaryMerkleTree` keeps every node in one `Uint8Array`
+  instead of one object per node, and fills padding subtrees from
+  precomputed empty-subtree digests instead of hashing them.
+
+This laptop's timings vary by 10–30% between runs (the OpenZeppelin library
+itself measured 14.5 s and 10.5 s for the same build in two runs), so read the
+ratios, not the last digit.
 
 ## What is measured
 
@@ -43,9 +97,9 @@ tree is always 42 levels deep.
 
 What differs between libraries, so the numbers are not like for like:
 
-- **Hash.** MerkleForge, OpenZeppelin, merkletreejs, and one Aztec
-  `StandardTree` run use Keccak-256 from `@noble/hashes` (or WebAssembly where
-  noted). The other Aztec runs use Poseidon2, a SNARK-friendly hash that costs
+- **Hash.** OpenZeppelin, merkletreejs, and one Aztec `StandardTree` run use
+  Keccak-256 from `@noble/hashes`; MerkleForge uses its own pure-JS Keccak-256
+  (same digests) or WebAssembly where noted. The other Aztec runs use Poseidon2, a SNARK-friendly hash that costs
   more per call in JavaScript.
 - **Storage.** The Aztec trees keep nodes in LMDB and support commit, rollback,
   and snapshots. `@aztec/world-state` is Aztec's native C++ rollup state. The
@@ -67,40 +121,40 @@ What differs between libraries, so the numbers are not like for like:
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/variants BinaryMerkleTree | Keccak-256 (noble) | 27.9 | 3.3 | 100 |
-| @merkleforge/variants BinaryMerkleTree + hash-wasm | Keccak-256 (WASM) | 6.9 | 2.2 | 27.3 |
-| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (noble) | 15.8 | 94.7 | 114 |
-| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 104 | 263 | 235 |
-| merkletreejs MerkleTree | Keccak-256 (noble) | 12.8 | 2.1 | 98.5 |
-| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 35.3 | 27.4 | 129 |
-| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 66.3 | 32.9 | 328 |
-| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 21.7 | 66.9 | 1257 |
+| @merkleforge/variants BinaryMerkleTree | Keccak-256 (MerkleForge JS) | 6.0 | 1.9 | 28.9 |
+| @merkleforge/variants BinaryMerkleTree + @merkleforge/hash-wasm | Keccak-256 (MerkleForge WASM SIMD) | 1.8 | 3.8 | 8.9 |
+| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (MerkleForge JS) | 5.6 | 30.1 | 29.3 |
+| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 70.2 | 178 | 161 |
+| merkletreejs MerkleTree | Keccak-256 (noble) | 9.0 | 1.4 | 61.2 |
+| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 23.9 | 19.1 | 105 |
+| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 38.5 | 20.3 | 218 |
+| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 16.5 | 40.8 | 1062 |
 
 **16,384 leaves**
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/variants BinaryMerkleTree | Keccak-256 (noble) | 276 | 9.3 | 128 |
-| @merkleforge/variants BinaryMerkleTree + hash-wasm | Keccak-256 (WASM) | 65.3 | 5.5 | 31.7 |
-| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (noble) | 173 | 124 | 174 |
-| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 1631 | 328 | 306 |
-| merkletreejs MerkleTree | Keccak-256 (noble) | 144 | 3.1 | 120 |
-| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 429 | 44.4 | 165 |
-| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 701 | 50.9 | 403 |
-| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 313 | 74.2 | 1251 |
+| @merkleforge/variants BinaryMerkleTree | Keccak-256 (MerkleForge JS) | 93.3 | 2.1 | 47.0 |
+| @merkleforge/variants BinaryMerkleTree + @merkleforge/hash-wasm | Keccak-256 (MerkleForge WASM SIMD) | 13.1 | 3.0 | 13.4 |
+| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (MerkleForge JS) | 95.7 | 53.0 | 55.2 |
+| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 1435 | 308 | 271 |
+| merkletreejs MerkleTree | Keccak-256 (noble) | 141 | 2.0 | 117 |
+| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 369 | 36.4 | 147 |
+| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 639 | 43.5 | 356 |
+| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 255 | 51.9 | 1000 |
 
 **131,072 leaves**
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/variants BinaryMerkleTree | Keccak-256 (noble) | 2119 | 10.8 | 148 |
-| @merkleforge/variants BinaryMerkleTree + hash-wasm | Keccak-256 (WASM) | 485 | 8.2 | 40.8 |
-| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (noble) | 1561 | 176 | 204 |
-| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 14518 | 743 | 474 |
-| merkletreejs MerkleTree | Keccak-256 (noble) | 1544 | 36.9 | 538 |
-| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 2669 | 51.9 | 167 |
-| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 4672 | 50.7 | 392 |
-| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 2007 | 52.9 | 988 |
+| @merkleforge/variants BinaryMerkleTree | Keccak-256 (MerkleForge JS) | 637 | 2.3 | 52.4 |
+| @merkleforge/variants BinaryMerkleTree + @merkleforge/hash-wasm | Keccak-256 (MerkleForge WASM SIMD) | 97.6 | 3.3 | 17.9 |
+| @merkleforge/openzeppelin SimpleMerkleTree | Keccak-256 (MerkleForge JS) | 825 | 56.3 | 71.7 |
+| @openzeppelin/merkle-tree SimpleMerkleTree | Keccak-256 (noble) | 10493 | 312 | 292 |
+| merkletreejs MerkleTree | Keccak-256 (noble) | 935 | 4.1 | 127 |
+| @aztec/merkle-tree StandardTree | Keccak-256 (noble) | 2668 | 53.8 | 177 |
+| @aztec/merkle-tree StandardTree | Poseidon2 (bb.js WASM) | 4919 | 56.7 | 393 |
+| @aztec/world-state note hash tree (native) | Poseidon2 (native C++), depth 42 | 2014 | 57.6 | 1010 |
 
 ### OpenZeppelin [address, uint256] leaves
 
@@ -108,24 +162,42 @@ What differs between libraries, so the numbers are not like for like:
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (noble) | 28.4 | 85.8 | 103 |
-| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 125 | 230 | 220 |
+| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (MerkleForge JS) | 15.7 | 43.1 | 45.3 |
+| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 131 | 234 | 229 |
 
 **16,384 leaves**
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (noble) | 386 | 115 | 131 |
-| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 1874 | 289 | 271 |
+| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (MerkleForge JS) | 196 | 53.6 | 55.1 |
+| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 1960 | 283 | 270 |
 
 **131,072 leaves**
 
 | Library | Hash | Build (ms) | Proof (µs) | Verify (µs) |
 |---|---|---:|---:|---:|
-| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (noble) | 3070 | 141 | 171 |
-| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 15197 | 333 | 320 |
+| @merkleforge/openzeppelin StandardMerkleTree | Keccak-256 (MerkleForge JS) | 1708 | 74.8 | 78.7 |
+| @openzeppelin/merkle-tree StandardMerkleTree | Keccak-256 (noble) | 21021 | 347 | 344 |
 
 Node v24.15.0, 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz, linux 7.0.0-38-generic. Build is the median of 3 runs; proof and verify are the mean over 2000 random leaves.
+
+## Keccak-256 per call
+
+Plain Keccak-256 (`keccak256` from `@merkleforge/hash`, no domain prefix)
+against `keccak_256` from `@noble/hashes` 2.4.0, on the input sizes trees hash:
+32-byte leaves, 33-byte prefixed leaves, 64- and 65-byte node pairs, and one
+full 136-byte block. Both produce the same digests; the script checks this
+before timing.
+
+| Input | @noble/hashes keccak_256 | @merkleforge/hash keccak256 | Speedup |
+|---:|---:|---:|---:|
+| 32 B | 7.00 µs | 3.25 µs | 2.2x |
+| 33 B | 8.86 µs | 3.32 µs | 2.7x |
+| 64 B | 7.85 µs | 3.37 µs | 2.3x |
+| 65 B | 7.57 µs | 3.43 µs | 2.2x |
+| 136 B | 14.44 µs | 5.30 µs | 2.7x |
+
+Node v24.15.0, 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz, linux 7.0.0-38-generic. Median of 5 rounds of 200,000 calls per size.
 
 ## Install footprint
 
@@ -135,7 +207,7 @@ and the total size of the library plus its dependencies.
 | Library | Dependencies | Size |
 |---|---:|---:|
 | `@merkleforge/core` + `hash` + `variants` | 1 (`@noble/hashes`) | 1.4 MB |
-| `@merkleforge/openzeppelin` | 2 (`@merkleforge/core`, `@noble/hashes`) | 1.1 MB |
+| `@merkleforge/openzeppelin` | 3 (`@merkleforge/core`, `@merkleforge/hash`, `@noble/hashes`) | 1.1 MB |
 | `merkletreejs` 0.6.0 | 3 | 1 MB |
 | `@openzeppelin/merkle-tree` 1.0.8 | 38 | 16 MB |
 | `@aztec/merkle-tree` 4.4.0 | 362 | 395 MB |
@@ -147,10 +219,46 @@ not as general-purpose tree libraries.
 
 ## Reproduce
 
+Everything here runs from [`bench/`](bench), a standalone npm project kept
+out of the pnpm workspace so CI never installs the comparison libraries (the
+Aztec packages alone are over 1 GB). It imports MerkleForge from the
+workspace's `packages/*/dist`, so build first.
+
+### Library comparison ([Results](#results), [Summary](#summary))
+
 ```sh
 pnpm install && pnpm build   # in the repo root
 cd bench
-npm install                  # comparison libraries, kept out of the pnpm workspace
-npm run bench                # writes results.json; SIZES, OPS, and BUILD_RUNS env vars adjust the run
-node report.mjs              # prints the tables above
+npm install                  # comparison libraries
+npm run bench                # writes results.json; takes a few minutes
+node report.mjs              # prints the Results tables as Markdown
 ```
+
+`SIZES` (default `1024,16384,131072`), `OPS` (default `2000`), and
+`BUILD_RUNS` (default `3`) adjust the run, for example
+`SIZES=131072 BUILD_RUNS=5 npm run bench`. `npm run bench` passes
+`--expose-gc` so each timed build starts after a garbage collection.
+
+### Keccak-256 per call ([Keccak-256 per call](#keccak-256-per-call))
+
+```sh
+cd bench
+npm run bench:keccak         # CALLS adjusts the hashes per size (default 200000)
+```
+
+This one needs only `@noble/hashes` from `bench/`'s dependencies.
+
+### Against 0.2.2 ([What changed since 0.2.2](#what-changed-since-022))
+
+Run the same harness at the `v0.2.2` tag in a second worktree, then compare
+the two `report.mjs` outputs:
+
+```sh
+git worktree add ../merkleforge-0.2.2 v0.2.2
+cd ../merkleforge-0.2.2
+pnpm install && pnpm build
+cd bench && npm install && SIZES=131072 npm run bench && node report.mjs
+```
+
+Run both versions back to back on an idle machine; timings on a laptop drift
+by 10–30% between runs, so compare ratios rather than single numbers.
