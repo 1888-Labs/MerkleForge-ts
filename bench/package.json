@@ -5,7 +5,8 @@
   "description": "Compares MerkleForge with other JavaScript Merkle tree libraries. Separate from the pnpm workspace so CI never installs the comparison libraries.",
   "scripts": {
     "bench": "node --expose-gc run.mjs",
-    "bench:keccak": "node keccak.mjs"
+    "bench:keccak": "node keccak.mjs",
+    "parity": "node parity.mjs"
   },
   "dependencies": {
     "@aztec/foundation": "4.4.0",
